@@ -1,5 +1,7 @@
 import React from "react"
 
+import ReactApexChart from "react-apexcharts"
+
 const Card = props => (
   <div 
     style = {{
@@ -25,17 +27,60 @@ const Card = props => (
     {/* Main details on the card */}
     <div 
       style = {{
-        padding: '3% 4%'
+        padding: '3% 4%',
+        lineHeight: '5px'
       }}
     >
       <h3>{props.id}</h3>
+      <p>Today's Time Slots</p>
       <ul>
-        <li>Total Time Slots: {props.totalSlots}</li>
-        <li>Available Time Slots: {props.availSlots}</li>
+        <li>Total: {props.totalSlots}</li>
+        <li>Available: {props.availSlots}</li>
       </ul>
       
     </div>
+
+    {/*Pie Chart */}
+    <div 
+      style = {{
+        position: 'absolute',
+        right: '0',
+      }}
+    >
+      <ReactApexChart 
+        options={pieData.options} 
+        series={[ parseInt(props.availSlots) / parseInt(props.totalSlots), 
+                 (parseInt(props.totalSlots) - parseInt(props.availSlots)) / parseInt(props.totalSlots) ]} 
+        type="donut" 
+      />
+    </div>
   </div>
 )
+
+const pieData = {
+  options: {
+    labels: ['Available', 'Taken'],
+    colors: ['#00eeff', '#e60008'],
+    chart: {
+      type: 'donut',
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }],
+    dataLabels: { 
+      enabled: false, 
+      formatter: (val, opt) => {return val}
+    },
+  },
+  
+}
 
 export default Card;

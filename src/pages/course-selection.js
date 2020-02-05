@@ -17,6 +17,12 @@ const CourseSelection = () => (
       width: '100%'
     }}
   >
+    <h2 
+      style={{
+        margin: '0 auto',
+    }}>
+      Select Your Course
+    </h2>
     <Card 
       id = "Dance 420"
       color = '#c7fcd1'
