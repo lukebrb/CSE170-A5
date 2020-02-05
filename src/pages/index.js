@@ -21,7 +21,6 @@ const IndexPage = () => (
       <button type="submit">Submit</button>
     </form>
 
-    <Link to="/page-2/">Go to page 2</Link>
     <Link to="/course-selection/">Course Selection Page</Link>
   </Layout>
 )
