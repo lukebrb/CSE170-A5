@@ -5,7 +5,7 @@ import Layout from "../components/layout"
 import MiniCalendar from "../components/mini-calendar"
 import AvailabilityList from "../components/availability-list"
 
-const SecondPage = () => (
+const TimeSelection = () => (
   <Layout>
     <nav class="breadcrumb" aria-label="breadcrumbs">
       <ul>
@@ -28,4 +28,4 @@ const SecondPage = () => (
   </Layout>
 )
 
-export default SecondPage
+export default TimeSelection
