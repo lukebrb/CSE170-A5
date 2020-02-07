@@ -10,7 +10,7 @@ const CourseSelection = () => (
     style={{
       margin: "0 auto",
       padding: "7% 2%",
-      backgroundColor: "#03fcdf",
+      backgroundColor: "#000000",
       display: "flex",
       flexDirection: "column",
       position: "absolute",
