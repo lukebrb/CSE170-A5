@@ -6,6 +6,8 @@ const dates = [
   { symbol: "W", number: 19 },
   { symbol: "Th", number: 20 },
   { symbol: "F", number: 21 },
+  { symbol: "Sa", number: 22 },
+  { symbol: "Su", number: 23 },
 ]
 
 const MiniCalendar = () => (
@@ -14,7 +16,7 @@ const MiniCalendar = () => (
       {dates.map(date => (
         <li>
           <a className="pagination-link">
-            {date.symbol} | {date.number}
+            {date.symbol} <br></br> {date.number}
           </a>
         </li>
       ))}
