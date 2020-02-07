@@ -6,8 +6,6 @@ const dates = [
   { symbol: "W", number: 19 },
   { symbol: "Th", number: 20 },
   { symbol: "F", number: 21 },
-  { symbol: "Sa", number: 22 },
-  { symbol: "Su", number: 23 },
 ]
 
 const MiniCalendar = () => (
