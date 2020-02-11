@@ -19,7 +19,7 @@ function LoginPage(props) {
     if ( execute === 'emailSignup' ) {
       console.log("email signup")
       firebase.auth().createUserWithEmailAndPassword(email, pass)
-        .then(this.props.logUser)
+        .then(props.logUser)
         .catch(err => {
           console.error("create acc error: \n", err.message);
           setCreateAccErr(err);
@@ -32,7 +32,7 @@ function LoginPage(props) {
     if ( execute === 'emailLogin' ) {
       console.log("email login")
       firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then(this.props.logUser)
+        .then(props.logUser)
         .catch( err => console.error("ERROR WITH EMAIL + PASSWORD LOGIN\n", err));
     }
   });
@@ -43,7 +43,7 @@ function LoginPage(props) {
     if ( execute === 'googleLogin' ) {
       console.log("google login")
       firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
-        .then(this.props.logUser)
+        .then(props.logUser)
         .catch(err => console.error("error with google sign in:\n", err));
     }
   });
@@ -54,7 +54,7 @@ function LoginPage(props) {
     if ( execute === 'facebookLogin' ) {
       console.log("fb login")
       firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
-        .then(this.props.logUser)
+        .then(props.logUser)
         .catch(err => console.error("error with facebook sign in:\n", err));
     }
   });
@@ -100,7 +100,7 @@ function LoginPage(props) {
             shouldExecute('emailLogin');
           }}
         >
-          Login
+          Login 
         </button>
       </form>
       <button onClick={() => {shouldExecute('googleLogin')}}>Sign In With Google</button>
