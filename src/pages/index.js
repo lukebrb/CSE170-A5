@@ -4,8 +4,6 @@ import { Link } from "gatsby"
 import LoginPage from './login';
 import CourseSelection from './course-selection';
 
-import firebase from 'firebase';
-
 class HomePage extends React.Component {
 
   // Access with firebase.auth().currentUser after --> will probably implement 

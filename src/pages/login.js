@@ -1,108 +1,112 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
-import { fb } from '../firebase';
-import firebase from 'firebase';
+import { useFirebase } from 'gatsby-plugin-firebase'
 
-class LoginPage extends React.Component{
-  constructor(props) {
-    super(props);
-    
-    this.login = {
-      email: "",
-      google: new firebase.auth.GoogleAuthProvider(),
-      facebook: new firebase.auth.FacebookAuthProvider()
+function LoginPage(props) {
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [failedLogin, setFailedLogin] = useState(false);
+  const [createAccErr, setCreateAccErr] = useState(false);
+
+  // Gate keeper for hooks
+  const [execute, shouldExecute] = useState(0);     
+
+  // Email signup                                                      
+  useFirebase(firebase => {
+    if ( execute === 'emailSignup' ) {
+      console.log("email signup")
+      firebase.auth().createUserWithEmailAndPassword(email, pass)
+        .then(this.props.logUser)
+        .catch(err => {
+          console.error("create acc error: \n", err.message);
+          setCreateAccErr(err);
+        })
     }
-
-    this.state = {
-      email: '',
-      pass: '',
-      failedLogin: false,
-      createAccErr: false
-    }
-  }
-
-  emailSignup = (email, password) => {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(this.props.logUser)
-      .catch(err => {
-        console.error("creat acc error: \n", err.message);
-        this.setState({ createAccErr: err.message })
-      })
-  }
-
-  emailLogin = (email, password) => {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(this.props.logUser)
-      .catch( err => console.error("ERROR WITH EMAIL + PASSWORD LOGIN\n", err));
-  }
-
-  googleLogin = () => {
-    firebase.auth().signInWithPopup(this.login.google)
-      .then(this.props.logUser)
-      .catch(err => console.error("error with google sign in:\n", err));
-  }
+  });
   
-  facebookLogin = () => {
-    firebase.auth().signInWithPopup(this.login.facebook)
-      .then(this.props.logUser)
-      .catch(err => console.error("error with facebook sign in:\n", err));
-  }
+  // Email login
+  useFirebase(firebase => {
+    if ( execute === 'emailLogin' ) {
+      console.log("email login")
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then(this.props.logUser)
+        .catch( err => console.error("ERROR WITH EMAIL + PASSWORD LOGIN\n", err));
+    }
+  });
 
+  // Google login
+  useFirebase(firebase => {
+    console.log("google login initial")
+    if ( execute === 'googleLogin' ) {
+      console.log("google login")
+      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then(this.props.logUser)
+        .catch(err => console.error("error with google sign in:\n", err));
+    }
+  });
+  
+  // Facebook login
+  useFirebase(firebase => {
+    console.log("fb login initial")
+    if ( execute === 'facebookLogin' ) {
+      console.log("fb login")
+      firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
+        .then(this.props.logUser)
+        .catch(err => console.error("error with facebook sign in:\n", err));
+    }
+  });
 
-  render = () => {
-    return (
-      <Layout>
-        <SEO title="Login" />
+  return (
+    <Layout>
+      <SEO title="Login" />
 
-        <h1>Login</h1>
-        <form>
-          <p>{this.state.failedLogin ? "Incorrect username or password" : ''}</p>
-          <p>{this.state.createAccErr ? this.state.createAccErr : ''}</p>
-          <label>
-            Username
-            <input 
-              onChange={ e => { this.setState({ email: e.target.value }) }}
-            />
-          </label>
-          <label>
-            Password
-            <input 
-              onChange={ e => { this.setState({ pass: e.target.value }) }}
-              type="password"
-            />
-          </label>
-          <button 
+      <h1>Login</h1>
+      <form>
+        <p>{failedLogin ? "Incorrect username or password" : ''}</p>
+        <p>{createAccErr ? createAccErr : ''}</p>
+        <label>
+          Username
+          <input 
+            onChange={ e => { setEmail(e.target.value) }}
+          />
+        </label>
+        <label>
+          Password
+          <input 
+            onChange={ e => { setPass(e.target.value) }}
+            type="password"
+          />
+        </label>
+        <button 
+        onClick={ e => {
+          e.preventDefault();
+
+          shouldExecute('emailSignup');
+        }}
+        >
+          Sign Up
+        </button>
+        <button
           onClick={ e => {
             e.preventDefault();
 
-            this.emailSignup(this.state.email, this.state.pass);
+            // Show login error if incorrect email/pass
+            // if (!this.emailLogin(email, pass)) {
+            //   setFailedLogin(true);
+            // }
+            shouldExecute('emailLogin');
           }}
-          >
-            Sign Up
-          </button>
-          <button
-            onClick={ e => {
-              e.preventDefault();
-
-              // Show login error if incorrect email/pass
-              if (!this.emailLogin(this.state.email, this.state.pass)) {
-                this.setState({ failedLogin: true });
-              }
-            }}
-          >
-            Login
-          </button>
-        </form>
-        <button onClick={this.googleLogin}>Sign In With Google</button>
-        <button onClick={this.facebookLogin}>Sign In With Facebook</button>
-      </Layout>
-    )
-  }
-
-  
+        >
+          Login
+        </button>
+      </form>
+      <button onClick={() => {shouldExecute('googleLogin')}}>Sign In With Google</button>
+      <button onClick={() => {shouldExecute('facebookLogin')}}>Sign In With Facebook</button>
+    </Layout>
+  )
 }
 
 export default LoginPage;
