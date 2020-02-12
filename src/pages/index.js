@@ -1,7 +1,7 @@
 import React from "react"
 
-import LoginPage from './login';
-import CourseSelection from './course-selection';
+import Layout from "../components/layout"
+import SEO from "../components/seo"
 
 import { isLoggedIn } from '../auth'
 
