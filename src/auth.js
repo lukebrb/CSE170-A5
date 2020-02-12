@@ -5,8 +5,7 @@ export const getUser = () => {
 }
 
 export const isLoggedIn = () => {
-  const user = getUser();
-  return !!user.email;
+  return window.localStorage.getItem('user');
 }
 
 export const setUser = user => {
@@ -18,7 +17,7 @@ export const setUser = user => {
 export const logout = firebase => {
   return new Promise(resolve => {
     firebase.auth().signOut().then(function() {
-      setUser({});
+      window.localStorage.removeItem('user');
       resolve();
     })
   })
