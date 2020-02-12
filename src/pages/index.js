@@ -1,41 +1,18 @@
 import React from "react"
-import { Link } from "gatsby"
 
 import LoginPage from './login';
 import CourseSelection from './course-selection';
 
-class HomePage extends React.Component {
+import { isLoggedIn } from '../auth'
 
-  // Access with firebase.auth().currentUser after --> will probably implement 
-  // cookies to save user after refreshes
-  state = {
-    user: {
-      name: null,
-      uid: null
-    },
-    loggedIn: false
-  }
+function HomePage () {
+  const [loggedIn, newLogin] = React.useState(isLoggedIn());
 
-  logUser = result => {
-    this.setState({
-      user: {
-        name: result.user.displayName,
-        uid: result.user.uid
-      },
-      loggedIn: true
-    });
-
-    return true;
-  }
-
-  render() {
-    return (
-      (this.state.loggedIn) ? 
-        <CourseSelection /> : 
-        <LoginPage logUser={this.logUser}/>
-    
-    )
-  }
+  return (
+    (loggedIn) ? 
+      <CourseSelection /> : 
+      <LoginPage login={newLogin}/>
+  )
 }
       
 export default HomePage
