@@ -1,30 +1,25 @@
 import React from "react"
-import { Link } from "gatsby"
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
+import CourseSelection from './course-selection'
+import LoginPage from './login'
 
-    <h1>Login</h1>
-    <form>
-      <label>
-        Username
-        <input type="username" name="firstName" />
-      </label>
-      <label>
-        Password
-        <input type="password" name="lastName" />
-      </label>
-      <button type="submit">Submit</button>
-    </form>
+import { isLoggedIn } from '../auth'
 
-    <Link to="/course-selection/">Course Selection Page</Link>
-    <br></br>
-    <Link to="/time-selection/">Time Selection Page</Link>
-  </Layout>
-)
+function HomePage () {
+  const [loggedIn, newLogin] = React.useState(false);
 
-export default IndexPage
+  React.useEffect(() => {
+    newLogin(isLoggedIn)
+  }, [])
+
+  return (
+    (loggedIn) ? 
+      <CourseSelection /> : 
+      <LoginPage login={newLogin}/>
+  )
+}
+      
+export default HomePage
