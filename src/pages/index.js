@@ -6,7 +6,11 @@ import CourseSelection from './course-selection';
 import { isLoggedIn } from '../auth'
 
 function HomePage () {
-  const [loggedIn, newLogin] = React.useState(isLoggedIn());
+  const [loggedIn, newLogin] = React.useState(false);
+
+  React.useEffect(() => {
+    newLogin(isLoggedIn)
+  }, [])
 
   return (
     (loggedIn) ? 

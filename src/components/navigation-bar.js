@@ -3,7 +3,7 @@ import React, {useState} from "react"
 import { Link, navigate } from 'gatsby'
 
 import { useFirebase } from 'gatsby-plugin-firebase'
-import { isLoggedIn, logout } from '../auth'
+import { logout } from '../auth'
 
 function NavigationBar(props) {
   const [firebase, setFirebase] = useState();
