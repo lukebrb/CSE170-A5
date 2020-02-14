@@ -11,6 +11,10 @@ const QuestionInputController = ({ children }) => (
 )
 
 export default ({ location }) => {
+  let timeFromPrevious = ""
+  if (location.state) {
+    timeFromPrevious = location.state.time
+  }
   const [question, setQuestion] = useState("")
   const questionUpdateHandler = event => {
     setQuestion(event.target.value)
@@ -32,7 +36,7 @@ export default ({ location }) => {
       </QuestionInputController>
       <Link
         to="/confirmation"
-        state={{ questionText: question, timeSlot: location.state.time }}
+        state={{ data: { questionText: question, timeSlot: timeFromPrevious } }}
         className="button is-fullwidth is-primary"
       >
         Submit
