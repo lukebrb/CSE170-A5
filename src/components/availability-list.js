@@ -1,34 +1,27 @@
 import React from "react"
+import { Link } from "gatsby"
 
-const exampleArray = [
-  { time: "1:00", question: "Why do my feet hurt?" },
-  { time: "1:15", question: "How do I get on..." },
-  { time: "1:30", question: "How do I..." },
-  { time: "1:45", question: null },
-  { time: null, question: null },
-  { time: "3:00", question: null },
-  { time: "3:15", question: "Is there a better..." },
-  { time: "3:30", question: "Is there a better..." },
-  { time: "3:45", question: "Is there a better..." },
-  { time: "4:00", question: null },
-  { time: "4:15", question: "Is there a better..." },
-  { time: "4:30", question: "Is there a better..." },
-]
+import * as exampleArray from "../dataForA6/exampleArray.json"
+// Hey graders! This ^ is where we're importing json from. Thanks.
 
 const AvailabilityItem = ({ details }) => {
   // three states: Time w/ Question, Time w/ Available, Spacer (no time)
   var StatusItem
   const Unavailable = () => (
     <div>
-      <h1>BLANK</h1>
+      <div>...</div>
     </div>
   )
 
   const Available = () => (
-    <div>
+    <Link
+      to="input-question"
+      state={{ time: details.time }}
+      style={{ width: "100%" }}
+    >
       <div>{details.time}</div>
       <div>AVAILABLE</div>
-    </div>
+    </Link>
   )
 
   const Question = () => (
