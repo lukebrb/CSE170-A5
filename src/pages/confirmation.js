@@ -4,16 +4,22 @@ import { Link } from "gatsby"
 import Layout from "../components/layout"
 
 export default ({ location }) => {
+  var timeSlot = ""
+  var questionText = ""
+  if (location.state !== undefined) {
+    var { timeSlot, questionText } = location.state.data
+  }
+
   return (
     <Layout>
       <h1>Confirm Details</h1>
       <h3>Selected timeslot:</h3>
-      <p>{location.state.timeSlot}</p>
+      <p>{timeSlot}</p>
 
-      <hr></hr>
+      <hr />
 
       <h3>Your question</h3>
-      <p>{location.state.questionText}</p>
+      <p>{questionText}</p>
 
       <Link to="/" className="button is-fullwidth is-primary">
         Done

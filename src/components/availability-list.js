@@ -1,7 +1,21 @@
 import React from "react"
 import { Link } from "gatsby"
 
-import * as exampleArray from "../dataForA6/exampleArray.json"
+const exampleJSON = [
+  { time: "1:00", question: "Why do my feet hurt?" },
+  { time: "1:15", question: "How do I get on..." },
+  { time: "1:30", question: "How do I..." },
+  { time: "1:45", question: null },
+  { time: null, question: null },
+  { time: "3:00", question: null },
+  { time: "3:15", question: "Is there a better..." },
+  { time: "3:30", question: "Is there a better..." },
+  { time: "3:45", question: "Is there a better..." },
+  { time: "4:00", question: null },
+  { time: "4:15", question: "Is there a better..." },
+  { time: "4:30", question: "Is there a better..." },
+]
+
 // Hey graders! This ^ is where we're importing json from. Thanks.
 
 const AvailabilityItem = ({ details }) => {
@@ -51,7 +65,7 @@ const AvailabilityList = () => {
     <React.Fragment>
       <nav className="panel">
         <p className="panel-heading">Today</p>
-        {exampleArray.map(arrayItem => (
+        {exampleJSON.map(arrayItem => (
           <AvailabilityItem details={arrayItem} key={arrayItem.time} />
         ))}
       </nav>
