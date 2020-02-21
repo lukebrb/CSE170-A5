@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
+import { useFirebase } from "gatsby-plugin-firebase"
 
 const exampleJSON = [
   { time: "1:00", question: "Why do my feet hurt?" },
@@ -61,8 +62,21 @@ const AvailabilityItem = ({ details }) => {
 }
 
 const AvailabilityList = () => {
+  const [avail, setAvail] = React.useState()
+
+  useFirebase(firebase => {
+    firebase
+      .firestore()
+      .collection("courses")
+      .doc("MMW 15")
+      .get()
+      .then(res => {
+        console.log(res.data())
+      })
+  })
   return (
     <React.Fragment>
+      <p>{avail}</p>
       <nav className="panel">
         <p className="panel-heading">Today</p>
         {exampleJSON.map(arrayItem => (

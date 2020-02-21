@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
+import { useFirebase } from "gatsby-plugin-firebase"
 
 export default ({ location }) => {
   var timeSlot = ""
@@ -9,6 +10,14 @@ export default ({ location }) => {
   if (location.state !== undefined) {
     var { timeSlot, questionText } = location.state.data
   }
+
+  useFirebase(fb => {
+    if (timeSlot === "" || questionText === "") return
+    fb.firestore()
+      .collection("courses")
+      .doc("MMW 15")
+      .set({ timeSlot, questionText })
+  })
 
   return (
     <Layout>
