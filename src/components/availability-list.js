@@ -17,8 +17,6 @@ const exampleJSON = [
   { time: "4:30", question: "Is there a better..." },
 ]
 
-// Hey graders! This ^ is where we're importing json from. Thanks.
-
 const AvailabilityItem = ({ details }) => {
   // three states: Time w/ Question, Time w/ Available, Spacer (no time)
   var StatusItem
@@ -30,7 +28,7 @@ const AvailabilityItem = ({ details }) => {
 
   const Available = () => (
     <Link
-      to="input-question"
+      to="/input-question"
       state={{ time: details.time }}
       style={{ width: "100%" }}
     >
@@ -55,9 +53,9 @@ const AvailabilityItem = ({ details }) => {
   }
 
   return (
-    <a className="panel-block">
+    <div className="panel-block">
       <StatusItem />
-    </a>
+    </div>
   )
 }
 

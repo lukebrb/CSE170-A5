@@ -5,8 +5,8 @@ import Layout from "../components/layout"
 import NavigationBar from "../components/navigation-bar"
 
 const QuestionInputController = ({ children }) => (
-  <div class="field">
-    <div class="control">{children}</div>
+  <div className="field">
+    <div className="control">{children}</div>
   </div>
 )
 
@@ -28,7 +28,7 @@ export default ({ location }) => {
       />
       <QuestionInputController>
         <textarea
-          class="textarea is-large"
+          className="textarea is-large"
           value={question}
           placeholder="Ask a question..."
           onChange={questionUpdateHandler}

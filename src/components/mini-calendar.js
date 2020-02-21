@@ -1,8 +1,19 @@
 import React from "react"
+import moment from "moment"
 
 const dates = [
-  { symbol: "M", number: 17 },
-  { symbol: "Tu", number: 18 },
+  {
+    symbol: "M",
+    number: moment()
+      .day(1)
+      .date(),
+  },
+  {
+    symbol: "Tu",
+    number: moment()
+      .day(2)
+      .date(),
+  },
   { symbol: "W", number: 19 },
   { symbol: "Th", number: 20 },
   { symbol: "F", number: 21 },
@@ -11,11 +22,11 @@ const dates = [
 ]
 
 const MiniCalendar = () => (
-  <nav class="pagination" role="navigation" aria-label="pagination">
-    <ul class="pagination-list">
+  <nav className="pagination" role="navigation" aria-label="pagination">
+    <ul className="pagination-list">
       {dates.map(date => (
-        <li>
-          <a className="pagination-link">
+        <li key={date.number}>
+          <a className="pagination-link content is-size-7">
             {date.symbol} <br></br> {date.number}
           </a>
         </li>

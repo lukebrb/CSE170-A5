@@ -1,4 +1,6 @@
 import React, { useState } from "react"
+import { Link } from "gatsby"
+
 import moment, { unix, calendar } from "moment"
 import { useFirebase } from "gatsby-plugin-firebase"
 
@@ -25,22 +27,25 @@ export default () => {
   })
 
   return (
-    <div
-      className="container"
-      style={{
-        display: "flex",
-        overflowX: "auto",
-        overflowY: "hidden",
-      }}
-    >
-      {quickbookItems ? (
-        quickbookItems.map(quickbookItem => (
-          <MiniCard time={quickbookItem["time"]} />
-        ))
-      ) : (
-        <React.Fragment />
-      )}
-    </div>
+    <>
+      <h3>Quick Book</h3>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          overflowY: "hidden",
+        }}
+      >
+        {quickbookItems ? (
+          quickbookItems.map(quickbookItem => (
+            <MiniCard time={quickbookItem["time"]} />
+          ))
+        ) : (
+          <React.Fragment />
+        )}
+      </div>
+    </>
   )
 }
 
