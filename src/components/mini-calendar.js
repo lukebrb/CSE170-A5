@@ -3,7 +3,7 @@ import moment from "moment"
 
 const dates = [
   {
-    symbol: "M",
+    symbol: "M",        // TODO -  symbol will need to be mapped to current date
     number: moment()
       .day(1)
       .date(),
@@ -21,18 +21,27 @@ const dates = [
   { symbol: "Su", number: 23 },
 ]
 
-const MiniCalendar = () => (
-  <nav className="pagination" role="navigation" aria-label="pagination">
-    <ul className="pagination-list">
-      {dates.map(date => (
-        <li key={date.number}>
-          <a className="pagination-link content is-size-7">
-            {date.symbol} <br></br> {date.number}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
-)
+function MiniCalendar(props) {
+  props.updateDay(dates[0].symbol)
+
+  return (
+    <nav className="pagination" role="navigation" aria-label="pagination">
+      <ul className="pagination-list">
+        {dates.map(date => (
+          <li key={date.number}>
+            <a 
+              onClick={() => {
+                props.updateDay(date.symbol)
+              }}
+              className="pagination-link content is-size-7"
+            >
+              {date.symbol} <br></br> {date.number}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 
 export default MiniCalendar

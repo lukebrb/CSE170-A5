@@ -17,7 +17,7 @@ const exampleJSON = [
   { time: "4:30", question: "Is there a better..." },
 ]
 
-const AvailabilityItem = ({ details }) => {
+const AvailabilityItem = ({ details, day, course }) => {
   // three states: Time w/ Question, Time w/ Available, Spacer (no time)
   var StatusItem
   const Unavailable = () => (
@@ -29,7 +29,7 @@ const AvailabilityItem = ({ details }) => {
   const Available = () => (
     <Link
       to="/input-question"
-      state={{ time: details.time }}
+      state={{ time: details.time, course: course, day: day }}
       style={{ width: "100%" }}
     >
       <div>{details.time}</div>
@@ -59,26 +59,45 @@ const AvailabilityItem = ({ details }) => {
   )
 }
 
-const AvailabilityList = () => {
+const daySymbolMapping = {
+  Su: "sunday",
+  M: "monday",
+  Tu: "tuesday",
+  W: "wednesday",
+  Th: "thursday",
+  F: "friday",
+  Sa: "saturday"
+}
+
+const AvailabilityList = props => {
   const [avail, setAvail] = React.useState()
+  const [firebase, setFirebase] = React.useState();
 
   useFirebase(firebase => {
-    firebase
-      .firestore()
-      .collection("courses")
-      .doc("MMW 15")
-      .get()
-      .then(res => {
-        console.log(res.data())
-      })
-  })
+    setFirebase(firebase);
+  }, [])
+
+  // firebase
+  //     .firestore()
+  //     .collection("courses")
+  //     .doc("MMW 15")
+  //     .get()
+  //     .then(res => {
+  //       console.log(res.data())
+  //     })
+
   return (
     <React.Fragment>
       <p>{avail}</p>
       <nav className="panel">
         <p className="panel-heading">Today</p>
         {exampleJSON.map(arrayItem => (
-          <AvailabilityItem details={arrayItem} key={arrayItem.time} />
+          <AvailabilityItem 
+            details={arrayItem} 
+            day={daySymbolMapping[props.selectedDay]} 
+            course={props.course}
+            key={arrayItem.time} 
+          />
         ))}
       </nav>
     </React.Fragment>

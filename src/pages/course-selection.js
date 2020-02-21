@@ -38,7 +38,7 @@ const CourseSelection = () => {
         courses.map(course => (
           <Link
             to="/time-selection"
-            state={{ courseName: course }}
+            state={ {courseName: course} }
             key={course}
           >
             <div className="card" style={{ marginBottom: 10 }}>

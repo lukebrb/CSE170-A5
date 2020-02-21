@@ -36,7 +36,15 @@ export default ({ location }) => {
       </QuestionInputController>
       <Link
         to="/confirmation"
-        state={{ data: { questionText: question, timeSlot: timeFromPrevious } }}
+        state={
+          { data: { 
+              questionText: question, 
+              timeSlot: timeFromPrevious, 
+              course: location.state.course, 
+              day: location.state.day 
+            } 
+          }
+        }
         className="button is-fullwidth is-primary"
       >
         Submit
