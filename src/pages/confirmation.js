@@ -16,7 +16,12 @@ export default ({ location }) => {
     fb.firestore()
       .collection("courses")
       .doc("MMW 15")
-      .set({ timeSlot, questionText })
+      .update({
+        questions: firebase.firestore.FieldValue.arrayUnion({
+          timeSlot,
+          questionText,
+        }),
+      })
   })
 
   return (
