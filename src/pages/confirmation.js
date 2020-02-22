@@ -12,7 +12,7 @@ export default ({ location }) => {
   var course = ""
   var day = ''
 
-  if (isNaN(location.state)) {
+  if (location !== undefined && location.state !== undefined && location.state.data !== undefined) {
     var { timeSlot, questionText, course, day } = location.state.data
   }
 

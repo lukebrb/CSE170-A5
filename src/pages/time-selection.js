@@ -10,13 +10,18 @@ import AvailabilityList from "../components/availability-list"
 export default ({location}) => {
   var [selectedDay, updateDay] = React.useState();
 
+  var coursename = ''
+  if (location.state) {
+    coursename = location.state.courseName
+  }
+
   return (
     <Layout>
       <NavigationBar extend={false} parents={['Home', 'Time Selection']}/>
       <h1>Choose A Time</h1>
       <MiniCalendar updateDay={updateDay} />
   
-      <AvailabilityList selectedDay={selectedDay} course={location.state.courseName} />
+      <AvailabilityList selectedDay={selectedDay} course={coursename} />
     </Layout>
   )
 }
