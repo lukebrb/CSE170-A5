@@ -12,8 +12,12 @@ const QuestionInputController = ({ children }) => (
 
 export default ({ location }) => {
   let timeFromPrevious = ""
+  let course = ''
+  let day = ''
   if (location.state) {
     timeFromPrevious = location.state.time
+    course = location.state.course
+    day = location.state.day
   }
   const [question, setQuestion] = useState("")
   const questionUpdateHandler = event => {
@@ -40,8 +44,8 @@ export default ({ location }) => {
           { data: { 
               questionText: question, 
               timeSlot: timeFromPrevious, 
-              course: location.state.course, 
-              day: location.state.day 
+              course: course, 
+              day: day 
             } 
           }
         }
