@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import moment from "moment"
 
 const dates = [
@@ -22,8 +22,10 @@ const dates = [
 ]
 
 function MiniCalendar(props) {
-  props.updateDay(dates[0].symbol)
-
+  useEffect(() => {
+    props.updateDay(dates[0].symbol)
+  }, [])
+  
   return (
     <nav className="pagination" role="navigation" aria-label="pagination">
       <ul className="pagination-list">

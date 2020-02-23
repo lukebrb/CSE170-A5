@@ -18,9 +18,12 @@ const CourseSelection = () => {
     firebase
       .firestore()
       .collection("courses")
-      .get()
-      .then(doc => {
-        setCourses(doc.docs.map(document => document.data()["name"]))
+      .onSnapshot(querySnapshot => {
+        let courseList = []
+        querySnapshot.forEach(doc => {
+          courseList.push([doc.id, doc.data()['name']])
+        })
+        setCourses(courseList)
       })
   })
 
@@ -38,8 +41,8 @@ const CourseSelection = () => {
         courses.map(course => (
           <Link
             to="/time-selection"
-            state={ {courseName: course} }
-            key={course}
+            state={ {courseName: course[0]} }
+            key={course[1]}
           >
             <div className="card" style={{ marginBottom: 10 }}>
               <div className="card-content">
@@ -47,13 +50,13 @@ const CourseSelection = () => {
                   <div className="media-left">
                     <figure className="image is-48x48">
                       <img
-                        src={`https://picsum.photos/100?random=${course}`}
+                        src={`https://picsum.photos/100?random=${course[1]}`}
                         alt="Placeholder image"
                       />
                     </figure>
                   </div>
                   <div className="media-content">
-                    <p className="title is-4 is-family-sans-serif">{course}</p>
+                    <p className="title is-4 is-family-sans-serif">{course[1]}</p>
                   </div>
                 </div>
               </div>

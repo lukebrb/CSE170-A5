@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Link } from "gatsby"
 import { useFirebase } from "gatsby-plugin-firebase"
 
@@ -19,47 +19,76 @@ const exampleJSON = [
 
 const AvailabilityItem = ({ details, day, course }) => {
   // three states: Time w/ Question, Time w/ Available, Spacer (no time)
-  var StatusItem
+  // console.log("details: ", details)
+  // console.log("day: ", day);
+  // console.log("couse: ", course)
+
+  var result = []
+
+  for ( let detail of details ) {
+    if (detail.question) {
+      result.push(
+        <div className="panel-block">
+        
+          <div>{detail.time}</div>
+          <div>{detail.question}</div>
+          <div>{detail.location}</div>
+          <div>{detail.TA}</div>
+        </div>
+      )
+    }
+    else {
+      result.push(
+        <div className="panel-block">
+          <Link
+            to="/input-question"
+            state={{ time: detail.time, course:course, day: day }}
+            style={{ width: '100%' }}
+          >
+            <div>{detail.time}</div>
+            <div>AVAILABLE</div>
+          </Link>
+        </div>
+      )
+     }
+  }
+
   const Unavailable = () => (
     <div>
       <div>...</div>
     </div>
   )
 
-  const Available = () => (
-    <Link
-      to="/input-question"
-      state={{ time: details.time, course: course, day: day }}
-      style={{ width: "100%" }}
-    >
-      <div>{details.time}</div>
-      <div>AVAILABLE</div>
-    </Link>
-  )
+  // const Available = () => (
+  //   <Link
+  //     to="/input-question"
+  //     state={{ time: details.time, course: course, day: day }}
+  //     style={{ width: "100%" }}
+  //   >
+  //     <div>{details.time}</div>
+  //     <div>AVAILABLE</div>
+  //   </Link>
+  // )
 
-  const Question = () => (
-    <div>
-      <div>{details.time}</div>
-      <div>{details.question}</div>
-    </div>
-  )
+  // const Question = () => (
+  //   <div>
+  //     <div>{details.time}</div>
+  //     <div>{details.question}</div>
+  //   </div>
+  // )
 
-  if (details.time && details.question) {
-    StatusItem = Question
-  } else if (details.time) {
-    StatusItem = Available
-  } else {
-    StatusItem = Unavailable
-  }
+  // if (details.time && details.question) {
+  //   StatusItem = Question
+  // } else if (details.time) {
+  //   StatusItem = Available
+  // } else {
+  //   StatusItem = Unavailable
+  // }
 
-  return (
-    <div className="panel-block">
-      <StatusItem />
-    </div>
-  )
+  return result
 }
 
-const daySymbolMapping = {
+const dayMap = {
   Su: "sunday",
   M: "monday",
   Tu: "tuesday",
@@ -69,38 +98,60 @@ const daySymbolMapping = {
   Sa: "saturday"
 }
 
+var rawData = {}
+
 const AvailabilityList = props => {
   const [avail, setAvail] = React.useState()
-  const [firebase, setFirebase] = React.useState();
+  const [day, setDay] = React.useState(props.selectedDay);
+  const [courseData, setCourseData] = React.useState();
+
+  useEffect(() => {
+    setDay(props.selectedDay)
+
+    const currDay = dayMap[props.selectedDay]
+    var courses = [];
+    var questions = []
+    var curr;
+
+    for (let time in rawData[currDay]) {
+      questions = []
+      for ( let question in rawData[currDay][time].questions ) {
+        curr = rawData[currDay][time].questions[question];
+        questions.push({
+          TA: curr.TA,
+          answer: curr.answer,
+          location: curr.location,
+          question: curr.question
+        })
+      }
+      courses.push(questions) 
+    }
+    setCourseData(courses);
+  }, [props.selectedDay, rawData])
 
   useFirebase(firebase => {
-    setFirebase(firebase);
+    firebase.firestore()
+      .collection("courses")
+      .doc(props.course)
+      .get()
+      .then(doc => {
+        rawData = doc.data().OH;
+      })
   }, [])
-
-  // firebase
-  //     .firestore()
-  //     .collection("courses")
-  //     .doc("MMW 15")
-  //     .get()
-  //     .then(res => {
-  //       console.log(res.data())
-  //     })
-
-  //on prop change ==> requery firebase and rerender what's available
 
   return (
     <React.Fragment>
       <p>{avail}</p>
       <nav className="panel">
         <p className="panel-heading">Today</p>
-        {exampleJSON.map(arrayItem => (
+        {courseData ? courseData.map(arrayItem => (
           <AvailabilityItem 
             details={arrayItem} 
-            day={daySymbolMapping[props.selectedDay]}
+            day={dayMap[props.selectedDay]}
             course={props.course}
             key={arrayItem.time} 
-          />
-        ))}
+          />)) : ''
+        }
       </nav>
     </React.Fragment>
   )

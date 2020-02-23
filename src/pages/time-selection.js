@@ -20,7 +20,7 @@ export default ({location}) => {
       <NavigationBar extend={false} parents={['Home', 'Time Selection']}/>
       <h1>Choose A Time</h1>
       <MiniCalendar updateDay={updateDay} />
-  
+
       <AvailabilityList selectedDay={selectedDay} course={coursename} />
     </Layout>
   )
