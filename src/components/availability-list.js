@@ -2,35 +2,17 @@ import React, { useEffect } from "react"
 import { Link } from "gatsby"
 import { useFirebase } from "gatsby-plugin-firebase"
 
-const exampleJSON = [
-  { time: "1:00", question: "Why do my feet hurt?" },
-  { time: "1:15", question: "How do I get on..." },
-  { time: "1:30", question: "How do I..." },
-  { time: "1:45", question: null },
-  { time: null, question: null },
-  { time: "3:00", question: null },
-  { time: "3:15", question: "Is there a better..." },
-  { time: "3:30", question: "Is there a better..." },
-  { time: "3:45", question: "Is there a better..." },
-  { time: "4:00", question: null },
-  { time: "4:15", question: "Is there a better..." },
-  { time: "4:30", question: "Is there a better..." },
-]
-
-const AvailabilityItem = ({ details, day, course }) => {
+const AvailabilityItem = ({ time, details, day, course }) => {
   // three states: Time w/ Question, Time w/ Available, Spacer (no time)
-  // console.log("details: ", details)
-  // console.log("day: ", day);
-  // console.log("couse: ", course)
 
   var result = []
-
+  
   for ( let detail of details ) {
     if (detail.question) {
       result.push(
         <div className="panel-block">
         
-          <div>{detail.time}</div>
+          <div>{time}</div>
           <div>{detail.question}</div>
           <div>{detail.location}</div>
           <div>{detail.TA}</div>
@@ -42,10 +24,15 @@ const AvailabilityItem = ({ details, day, course }) => {
         <div className="panel-block">
           <Link
             to="/input-question"
-            state={{ time: detail.time, course:course, day: day }}
+            state={{ time: time, 
+                     course:course, 
+                     day: day,
+                     location: detail.location,
+                     TA: detail.TA
+                  }}
             style={{ width: '100%' }}
           >
-            <div>{detail.time}</div>
+            <div>{time}</div>
             <div>AVAILABLE</div>
           </Link>
         </div>
@@ -53,37 +40,12 @@ const AvailabilityItem = ({ details, day, course }) => {
      }
   }
 
+  // idk how to handle this case O.O
   const Unavailable = () => (
     <div>
       <div>...</div>
     </div>
   )
-
-  // const Available = () => (
-  //   <Link
-  //     to="/input-question"
-  //     state={{ time: details.time, course: course, day: day }}
-  //     style={{ width: "100%" }}
-  //   >
-  //     <div>{details.time}</div>
-  //     <div>AVAILABLE</div>
-  //   </Link>
-  // )
-
-  // const Question = () => (
-  //   <div>
-  //     <div>{details.time}</div>
-  //     <div>{details.question}</div>
-  //   </div>
-  // )
-
-  // if (details.time && details.question) {
-  //   StatusItem = Question
-  // } else if (details.time) {
-  //   StatusItem = Available
-  // } else {
-  //   StatusItem = Unavailable
-  // }
 
   return result
 }
@@ -101,15 +63,13 @@ const dayMap = {
 var rawData = {}
 
 const AvailabilityList = props => {
-  const [avail, setAvail] = React.useState()
-  const [day, setDay] = React.useState(props.selectedDay);
   const [courseData, setCourseData] = React.useState();
+  const [timeSlots, setTimeSlots] = React.useState();
 
-  useEffect(() => {
-    setDay(props.selectedDay)
-
+  const updateCourseData = () => {
     const currDay = dayMap[props.selectedDay]
     var courses = [];
+    var times = []
     var questions = []
     var curr;
 
@@ -124,10 +84,12 @@ const AvailabilityList = props => {
           question: curr.question
         })
       }
+      times.push(time)
       courses.push(questions) 
     }
+    setTimeSlots(times)
     setCourseData(courses);
-  }, [props.selectedDay, rawData])
+  }
 
   useFirebase(firebase => {
     firebase.firestore()
@@ -136,16 +98,22 @@ const AvailabilityList = props => {
       .get()
       .then(doc => {
         rawData = doc.data().OH;
+
+        updateCourseData();
       })
   }, [])
 
+  useEffect(() => {
+    updateCourseData();
+  }, [props.selectedDay, rawData])
+
   return (
     <React.Fragment>
-      <p>{avail}</p>
       <nav className="panel">
         <p className="panel-heading">Today</p>
-        {courseData ? courseData.map(arrayItem => (
+        {courseData ? courseData.map((arrayItem, idx) => (
           <AvailabilityItem 
+            time={timeSlots[idx]}
             details={arrayItem} 
             day={dayMap[props.selectedDay]}
             course={props.course}

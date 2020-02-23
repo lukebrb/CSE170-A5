@@ -14,10 +14,15 @@ export default ({ location }) => {
   let timeFromPrevious = ""
   let course = ''
   let day = ''
+  let room = ''
+  let TA = ''
+
   if (location.state) {
     timeFromPrevious = location.state.time
     course = location.state.course
     day = location.state.day
+    room = location.state.location
+    TA = location.state.TA
   }
   const [question, setQuestion] = useState("")
   const questionUpdateHandler = event => {
@@ -30,6 +35,9 @@ export default ({ location }) => {
         extend={false}
         parents={["Home", "Time Selection", "Input Question"]}
       />
+      <div>Timeslot: {day} - {timeFromPrevious}</div>
+      <div>Location: {room}</div>
+      <div>TA: {TA}</div>
       <QuestionInputController>
         <textarea
           className="textarea is-large"
@@ -45,13 +53,15 @@ export default ({ location }) => {
               questionText: question, 
               timeSlot: timeFromPrevious, 
               course: course, 
-              day: day 
+              day: day,
+              room: room,
+              TA: TA,
             } 
           }
         }
         className="button is-fullwidth is-primary"
       >
-        Submit
+        Continue
       </Link>
     </Layout>
   )

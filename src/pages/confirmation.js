@@ -11,9 +11,16 @@ export default ({ location }) => {
   var questionText = ""
   var course = ""
   var day = ''
+  var room = ''
+  var TA = ''
 
   if (location !== undefined && location.state !== undefined && location.state.data !== undefined) {
-    var { timeSlot, questionText, course, day } = location.state.data
+    var { timeSlot, 
+          questionText, 
+          course, 
+          day,
+          room,
+          TA } = location.state.data
   }
 
   useFirebase(fb => {
@@ -21,22 +28,42 @@ export default ({ location }) => {
   }, [])
   
   const saveQuestion = () => {
-    let key = timeSlot + '.selectedQuestion';
+    let key = 'OH.' + day + '.' + timeSlot + '.questions'
+
     firebase.firestore()
       .collection("courses")
       .doc(course)
-      .collection('questions')
-      .doc(day)
       .update({
-        [key]: questionText
-      })     
+        [key]: firebase.firestore.FieldValue.arrayRemove({
+          TA: TA,
+          answer: '',
+          location: room,
+          question: '',
+        })
+      }).then(() => {
+        firebase.firestore()
+          .collection("courses")
+          .doc(course)
+          .update({
+            [key]: firebase.firestore.FieldValue.arrayUnion({
+              TA: TA,
+              answer: '',
+              location: room,
+              question: questionText
+            })
+          });
+
+          // add code to save which student asked which question
+      })
   }
 
   return (
     <Layout>
       <h1>Confirm Details</h1>
       <h3>Selected timeslot:</h3>
-      <p>{timeSlot}</p>
+      <p>{day} - {timeSlot}</p>
+      <p>{course}</p>
+      <p>{room} - {TA}</p>
 
       <hr />      
       <h3>Your question</h3>
@@ -49,7 +76,7 @@ export default ({ location }) => {
           onClick={saveQuestion}
           className="button is-fullwidth is-primary"
         >
-          Done  
+          Confirm  
         </button>
       </Link>
     </Layout>
