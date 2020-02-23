@@ -86,6 +86,8 @@ const AvailabilityList = props => {
   //       console.log(res.data())
   //     })
 
+  //on prop change ==> requery firebase and rerender what's available
+
   return (
     <React.Fragment>
       <p>{avail}</p>
@@ -94,7 +96,7 @@ const AvailabilityList = props => {
         {exampleJSON.map(arrayItem => (
           <AvailabilityItem 
             details={arrayItem} 
-            day={daySymbolMapping[props.selectedDay]} 
+            day={daySymbolMapping[props.selectedDay]}
             course={props.course}
             key={arrayItem.time} 
           />
