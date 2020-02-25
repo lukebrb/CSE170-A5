@@ -4,31 +4,19 @@ import { Link } from "gatsby"
 import Layout from "../components/layout"
 import { useFirebase } from "gatsby-plugin-firebase"
 
-export default ({ location }) => {
+import withLocation from '../components/withLocation'
+
+const ConfirmationPage = ({ search }) => {
   const [firebase, setFirebase] = React.useState();
 
-  var timeSlot = ""
-  var questionText = ""
-  var course = ""
-  var day = ''
-  var room = ''
-  var TA = ''
-
-  if (location !== undefined && location.state !== undefined && location.state.data !== undefined) {
-    var { timeSlot, 
-          questionText, 
-          course, 
-          day,
-          room,
-          TA } = location.state.data
-  }
+  const {time, course, day, location, TA, question} = search;
 
   useFirebase(fb => {
     setFirebase(fb);
   }, [])
   
   const saveQuestion = () => {
-    let key = 'OH.' + day + '.' + timeSlot + '.questions'
+    let key = 'OH.' + day + '.' + time + '.questions'
 
     firebase.firestore()
       .collection("courses")
@@ -37,7 +25,7 @@ export default ({ location }) => {
         [key]: firebase.firestore.FieldValue.arrayRemove({
           TA: TA,
           answer: '',
-          location: room,
+          location: location,
           question: '',
         })
       }).then(() => {
@@ -48,8 +36,8 @@ export default ({ location }) => {
             [key]: firebase.firestore.FieldValue.arrayUnion({
               TA: TA,
               answer: '',
-              location: room,
-              question: questionText
+              location: location,
+              question: question
             })
           });
 
@@ -60,14 +48,14 @@ export default ({ location }) => {
   return (
     <Layout>
       <h1>Confirm Details</h1>
-      <h3>Selected timeslot:</h3>
-      <p>{day} - {timeSlot}</p>
+      <h3>Selected time:</h3>
+      <p>{day} - {time}</p>
       <p>{course}</p>
-      <p>{room} - {TA}</p>
+      <p>{location} - {TA}</p>
 
       <hr />      
       <h3>Your question</h3>
-      <p>{questionText}</p>
+      <p>{question}</p>
 
       <button onClick={saveQuestion}>test</button>
 
@@ -82,3 +70,5 @@ export default ({ location }) => {
     </Layout>
   )
 }
+
+export default withLocation(ConfirmationPage)

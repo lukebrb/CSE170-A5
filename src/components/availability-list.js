@@ -23,13 +23,11 @@ const AvailabilityItem = ({ time, details, day, course }) => {
       result.push(
         <div className="panel-block">
           <Link
-            to="/input-question"
-            state={{ time: time, 
-                     course:course, 
-                     day: day,
-                     location: detail.location,
-                     TA: detail.TA
-                  }}
+            to={"/input-question/?course=" + course
+                                + '&time=' + time
+                                + '&day=' + day
+                                + '&location=' + detail.location
+                                + '&TA=' + detail.TA}
             style={{ width: '100%' }}
           >
             <div>{time}</div>

@@ -3,6 +3,7 @@ import { Link } from "gatsby"
 
 import Layout from "../components/layout"
 import NavigationBar from "../components/navigation-bar"
+import withLocation from '../components/withLocation';
 
 const QuestionInputController = ({ children }) => (
   <div className="field">
@@ -10,20 +11,10 @@ const QuestionInputController = ({ children }) => (
   </div>
 )
 
-export default ({ location }) => {
-  let timeFromPrevious = ""
-  let course = ''
-  let day = ''
-  let room = ''
-  let TA = ''
+const InputQuestionPage = ({ search }) => {
 
-  if (location.state) {
-    timeFromPrevious = location.state.time
-    course = location.state.course
-    day = location.state.day
-    room = location.state.location
-    TA = location.state.TA
-  }
+  const {time, course, day, location, TA} = search;
+
   const [question, setQuestion] = useState("")
   const questionUpdateHandler = event => {
     setQuestion(event.target.value)
@@ -35,8 +26,8 @@ export default ({ location }) => {
         extend={false}
         parents={["Home", "Time Selection", "Input Question"]}
       />
-      <div>Timeslot: {day} - {timeFromPrevious}</div>
-      <div>Location: {room}</div>
+      <div>Timeslot: {day} - {time}</div>
+      <div>Location: {location}</div>
       <div>TA: {TA}</div>
       <QuestionInputController>
         <textarea
@@ -47,18 +38,13 @@ export default ({ location }) => {
         ></textarea>
       </QuestionInputController>
       <Link
-        to="/confirmation"
-        state={
-          { data: { 
-              questionText: question, 
-              timeSlot: timeFromPrevious, 
-              course: course, 
-              day: day,
-              room: room,
-              TA: TA,
-            } 
-          }
-        }
+        to={"/confirmation/?course=" + course
+                          + '&time=' + time
+                          + '&day=' + day
+                          + '&location=' + location
+                          + '&TA=' + TA
+                          + '&question=' + question}
+
         className="button is-fullwidth is-primary"
       >
         Continue
@@ -66,3 +52,5 @@ export default ({ location }) => {
     </Layout>
   )
 }
+
+export default withLocation(InputQuestionPage)

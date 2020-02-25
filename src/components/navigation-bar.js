@@ -5,12 +5,25 @@ import { Link, navigate } from "gatsby"
 import { useFirebase } from "gatsby-plugin-firebase"
 import { logout } from "../auth"
 
+import withLocation from '../components/withLocation'
+
 function NavigationBar(props) {
   const [firebase, setFirebase] = useState()
 
   useFirebase(firebase => {
     setFirebase(firebase)
+    
   }, [])
+
+  const mappings = {
+    Home: "/course-selection",
+    "Time Selection": "/time-selection/?course=" + props.search.course,
+    "Input Question": '/input-question/?course=' + props.search.course
+                                      + '&time=' + props.search.time
+                                      + '&day=' + props.search.day
+                                      + '&location=' + props.search.location
+                                      + '&TA=' + props.search.TA
+  }
 
   const getNavBar = () => {
     var history = []
@@ -40,11 +53,4 @@ function NavigationBar(props) {
   )
 }
 
-// I think it would be a good idea to add functionality for "..."
-// so that the navigation bar does not get extremely long
-const mappings = {
-  Home: "/course-selection",
-  "Time Selection": "/time-selection",
-}
-
-export default NavigationBar
+export default withLocation(NavigationBar)

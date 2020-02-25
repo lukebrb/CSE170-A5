@@ -1,5 +1,4 @@
 import React from "react"
-import {Link} from 'gatsby';
 
 import NavigationBar from '../components/navigation-bar'
 
@@ -7,13 +6,12 @@ import Layout from "../components/layout"
 import MiniCalendar from "../components/mini-calendar"
 import AvailabilityList from "../components/availability-list"
 
-export default ({location}) => {
+import withLocation from '../components/withLocation';
+
+function TimeSelectionPage ({search}) {
   var [selectedDay, updateDay] = React.useState();
 
-  var coursename = ''
-  if (location.state) {
-    coursename = location.state.courseName
-  }
+  const {course} = search;
 
   return (
     <Layout>
@@ -21,7 +19,9 @@ export default ({location}) => {
       <h1>Choose A Time</h1>
       <MiniCalendar updateDay={updateDay} />
 
-      <AvailabilityList selectedDay={selectedDay} course={coursename} />
+      <AvailabilityList selectedDay={selectedDay} course={course} />
     </Layout>
   )
 }
+
+export default withLocation(TimeSelectionPage);

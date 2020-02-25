@@ -3,7 +3,6 @@ import { Link } from "gatsby"
 import { useFirebase } from "gatsby-plugin-firebase"
 
 import Layout from "../components/layout"
-import NavigationBar from "../components/navigation-bar"
 import QuickBookings from "../components/quick-booking"
 import Appointment from "../components/upcoming-appointment"
 import { useState } from "react"
@@ -40,8 +39,7 @@ const CourseSelection = () => {
       ) : (
         courses.map(course => (
           <Link
-            to="/time-selection"
-            state={ {courseName: course[0]} }
+            to={"/time-selection/?course=" + course[0]}
             key={course[1]}
           >
             <div className="card" style={{ marginBottom: 10 }}>
