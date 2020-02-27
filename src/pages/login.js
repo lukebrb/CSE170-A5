@@ -51,10 +51,6 @@ function LoginPage(props) {
       <input onChange={(e) => {
         setDay(e.target.value)}}/>
       <hr/>
-      time
-      <input onChange={(e) => {
-        setTime(e.target.value)}}/>
-      <hr/>
       TA
       <input onChange={(e) => {
         setTA(e.target.value)}}/>
@@ -67,13 +63,17 @@ function LoginPage(props) {
       <input onChange={(e) => {
         setQuestion(e.target.value)}}/>
       <hr/>
-      answer
+      time
       <input onChange={(e) => {
-        setAnswer(e.target.value)}}/>
+        setTime(e.target.value)}}/>
       <hr/>
       timeVal 
       <input onChange={(e) => {
         setTimeVal(e.target.value)}}/>
+      <hr/>
+      answer
+      <input onChange={(e) => {
+        setAnswer(e.target.value)}}/>
       <hr/>
       <button onClick={() => {
         let key = 'OH.' + day + '.' + time + '.timeVal';
@@ -90,7 +90,7 @@ function LoginPage(props) {
         console.log(time)
         firebase.firestore()
           .collection("courses")
-          .doc('PHIL 121')
+          .doc('HIST 45')
           .update({
             [key]: parseInt(timeVal),
             [fullKey]: firebase.firestore.FieldValue.arrayUnion(data)
