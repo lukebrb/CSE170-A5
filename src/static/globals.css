@@ -1,0 +1,140 @@
+:root {
+  --neu-bg-color: #f6f5f1;
+}
+html {
+  background-color: var(--neu-bg-color);
+}
+
+div {
+  font-weight: bold;
+  color: rgb(0, 31, 63);
+  background-color: var(--neu-bg-color);
+}
+
+.firebaseui-card-content {
+  background-color: white;
+}
+
+.card {
+  border-radius: 25px;
+  background: #f6f5f1;
+  box-shadow: 20px 20px 60px #d1d0cd, -20px -20px 60px #ffffff;
+  margin-top: 30px;
+}
+
+.num-available {
+  border-radius: 50px;
+  background-color: var(--neu-bg-color);
+  box-shadow: inset 20px 20px 60px #d0a774, inset -20px -20px 60px #ffe39c;
+}
+
+a {
+  color: rgb(0, 31, 63);
+}
+
+.button {
+  border-radius: 50px;
+  background: #f6f5f1;
+}
+
+.date-tray {
+  border-radius: 50px;
+  background: #f6f5f1;
+  box-shadow: inset 20px 20px 60px #d1d0cd, inset -20px -20px 60px #ffffff;
+
+  display: flex;
+  justify-content: center;
+}
+.date-tray > li {
+  margin: 4px;
+  border-radius: 50px;
+  background: #f6f5f1;
+  box-shadow: 20px 20px 60px #d1d0cd, -20px -20px 60px #ffffff;
+}
+
+.date-tray > li > a {
+  border: none;
+  border-radius: 50px;
+  background: #f6f5f1;
+  box-shadow: 20px 20px 60px #d1d0cd, -20px -20px 60px #ffffff;
+}
+
+.Collapsible {
+  margin-top: 20px;
+  border-radius: 20px;
+  background: #f6f5f1;
+  box-shadow: 20px 20px 60px #d1d0cd, -20px -20px 60px #ffffff;
+
+  padding: 1rem;
+}
+
+.neu-pressed {
+  border-radius: 25px;
+  background: #f6f5f1;
+  box-shadow: inset 20px 20px 60px #d1d0cd, inset -20px -20px 60px #ffffff;
+
+  padding: 1rem;
+}
+
+.question-slot {
+  margin-left: 2rem;
+}
+
+.question-available {
+}
+
+.question-time {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.react-add-to-calendar {
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  width: 100%;
+}
+.react-add-to-calendar__wrapper {
+  zoom: 1;
+  cursor: pointer;
+}
+.react-add-to-calendar__button {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #aab9d4;
+  border-radius: 3px;
+  color: #000;
+}
+.react-add-to-calendar__button--light {
+  background-color: #fff;
+}
+.react-add-to-calendar__icon--right {
+  padding-left: 5px;
+}
+.react-add-to-calendar__icon--left {
+  padding-right: 5px;
+}
+.react-add-to-calendar__dropdown {
+  position: absolute;
+  top: 30px;
+  left: 1px;
+  width: 93%;
+  padding: 5px 0 5px 8px;
+  box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid #a8a8a8;
+  background-color: #fff;
+  text-align: left;
+}
+.react-add-to-calendar__dropdown ul {
+  list-style: none;
+  margin: 0;
+}
+.react-add-to-calendar__dropdown ul li a {
+  color: #000;
+  text-decoration: none;
+}
+.react-add-to-calendar__dropdown ul li a i {
+  padding-right: 10px;
+}

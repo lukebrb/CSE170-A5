@@ -1,47 +1,52 @@
-import React from "react"
-import { Link } from "gatsby"
-import { useFirebase } from "gatsby-plugin-firebase"
+import React from 'react';
+import { Link } from 'gatsby';
+import { useFirebase } from 'gatsby-plugin-firebase';
+import algoliasearch from 'algoliasearch/lite';
+import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
 
-import Layout from "../components/layout"
-import QuickBookings from "../components/quick-booking"
-import Appointment from "../components/upcoming-appointment"
-import { useState } from "react"
+import Layout from '../components/layout';
+import QuickBookings from '../components/quick-booking';
+import Appointment from '../components/upcoming-appointment';
+import { useState } from 'react';
+
+import '../static/algolia.css';
 
 // import Card from "../components/course-card"
 
 // This page will need to dynamically update what courses are shown
 // based on the user that is currently logged on
 const CourseSelection = () => {
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState([]);
+  const searchClient = algoliasearch('questions', 'SEARCHKEY');
   useFirebase(firebase => {
     firebase
       .firestore()
-      .collection("courses")
+      .collection('courses')
       .onSnapshot(querySnapshot => {
-        let courseList = []
+        let courseList = [];
         querySnapshot.forEach(doc => {
-          courseList.push([doc.id, doc.data()['name']])
-        })
-        setCourses(courseList)
-      })
-  })
+          courseList.push([doc.id, doc.data()['name']]);
+        });
+        setCourses(courseList);
+      });
+  });
 
   return (
     <Layout>
-      <h1>Home</h1>
+      <InstantSearch indexName="lol" searchClient={searchClient}>
+        <SearchBox />
+      </InstantSearch>
       <Appointment />
-      <QuickBookings courses={courses} />
-      <h3>Select Your Course</h3>
+      {courses ? <QuickBookings courses={courses} /> : <p>...</p>}
+
+      <h3 className="is-size-4 has-text-weight-bold">Select Your Course</h3>
       {courses.length == 0 ? (
         <div className="box is-loading">
           <progress className="progress is-medium is-grey-lighter" max="100" />
         </div>
       ) : (
         courses.map(course => (
-          <Link
-            to={"/time-selection/?course=" + course[0]}
-            key={course[1]}
-          >
+          <Link to={'/time-selection/?course=' + course[0]} key={course[1]}>
             <div className="card" style={{ marginBottom: 10 }}>
               <div className="card-content">
                 <div className="media">
@@ -54,7 +59,9 @@ const CourseSelection = () => {
                     </figure>
                   </div>
                   <div className="media-content">
-                    <p className="title is-4 is-family-sans-serif">{course[1]}</p>
+                    <p className="title is-4 is-family-sans-serif">
+                      {course[1]}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -63,7 +70,7 @@ const CourseSelection = () => {
         ))
       )}
     </Layout>
-  )
-}
+  );
+};
 
-export default CourseSelection
+export default CourseSelection;
