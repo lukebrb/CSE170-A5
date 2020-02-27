@@ -1,32 +1,32 @@
-import React, { useState } from "react"
-import { Link } from "gatsby"
+import React, { useState } from 'react';
+import { Link } from 'gatsby';
 
-import moment, { unix, calendar } from "moment"
-import { useFirebase } from "gatsby-plugin-firebase"
+import moment, { unix, calendar } from 'moment';
+import { useFirebase } from 'gatsby-plugin-firebase';
 
-import getNearest from "../helpers/nearest-times"
+import getNearest from '../helpers/nearest-times';
 
 export default () => {
-  const [quickbookItems, setQuickbookItems] = useState()
+  const [quickbookItems, setQuickbookItems] = useState();
   useFirebase(async firebase => {
     const coll = await firebase
       .firestore()
-      .collection("TAs")
+      .collection('TAs')
       .get()
-      .then(doc => doc.docs.map(ta => ta.data()))
+      .then(doc => doc.docs.map(ta => ta.data()));
 
-    setQuickbookItems(getNearest(3, coll))
-  })
+    setQuickbookItems(getNearest(3, coll));
+  });
 
   return (
     <>
-      <h3>Quick Book</h3>
+      <h3 className="is-size-4 has-text-weight-bold">Quick Book</h3>
       <div
         className="container"
         style={{
-          display: "flex",
-          overflowX: "auto",
-          overflowY: "hidden",
+          display: 'flex',
+          overflowX: 'auto',
+          overflowY: 'hidden',
         }}
       >
         {quickbookItems ? (
@@ -38,8 +38,8 @@ export default () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
 // Micro-components
 const MiniCard = ({ name, hour, course }) => {
@@ -47,8 +47,8 @@ const MiniCard = ({ name, hour, course }) => {
     <div
       className="box"
       style={{
-        marginRight: "20px",
-        height: "7rem",
+        marginRight: '20px',
+        height: '7rem',
       }}
     >
       <h5 class="is-size-7 is-marginless">
@@ -64,7 +64,7 @@ const MiniCard = ({ name, hour, course }) => {
               {name}
             </h5>
           </div>
-        </div>{" "}
+        </div>{' '}
         <div className="media-right">
           <figure className="image is-32x32">
             <img
@@ -76,5 +76,5 @@ const MiniCard = ({ name, hour, course }) => {
         </div>
       </article>
     </div>
-  )
-}
+  );
+};
