@@ -13,7 +13,8 @@ module.exports = {
         features: {
           auth: true,
           firestore: true,
-          storage: true
+          storage: true,
+          functions: true
         },
         credentials: {
           apiKey: "AIzaSyDrMQJASkZxLYg8QhUSo-5ahAMYBOIzJYM",

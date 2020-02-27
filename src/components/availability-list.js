@@ -88,14 +88,12 @@ const AvailabilityList = props => {
     setTimeSlots(times)
     setCourseData(courses);
   }
-
+  
   useFirebase(firebase => {
-    firebase.firestore()
-      .collection("courses")
-      .doc(props.course)
-      .get()
-      .then(doc => {
-        rawData = doc.data().OH;
+    firebase.functions()
+      .httpsCallable('getOH')(props.course)
+      .then(result => {
+        rawData = result.data;
 
         updateCourseData();
       })
