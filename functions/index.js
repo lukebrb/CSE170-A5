@@ -8,11 +8,33 @@ const db = admin.firestore();
 
 const env = functions.config();
 
-//const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
-//const index = client.initIndex('office_hours_questions');
+const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
+const index = client.initIndex('office_hours_questions');
 
+// For when new questions are created
+exports.indexNewQuestion = functions.firestore
+  .document('questions/{questionID}')
+  .onCreate((snap, context) => {
+    const data = snap.data();
+    const objID = snap.id;
 
-exports.getOH = functions.https.onCall( async (course, context) => {
+    return index.addObject({
+      objID,
+      ...data
+    })
+  })
+
+// For removing questions
+exports.removeQuestionIndex = functions.firestore
+  .document('questions/{questionID}')
+  .onDelete((snap, context) => {
+    const objID = snap.id;
+
+    return index.deleteObject(objID)
+  })
+
+// Returns OH for selected course
+exports.getOH = functions.https.onCall( async (course) => {
   var queries = [];
   var OH;
 
