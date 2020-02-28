@@ -1,7 +1,6 @@
 import { useFirebase } from 'gatsby-plugin-firebase';
-import firebase from 'firebase';
 
-export const getQuestionFromReference = async UID => {
+export const getQuestionFromReference = async (UID, firebase) => {
   var res = {};
   if (UID === undefined) return res;
 

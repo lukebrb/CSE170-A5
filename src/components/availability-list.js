@@ -96,7 +96,7 @@ const AvailabilityList = props => {
   const [timeSlots, setTimeSlots] = React.useState();
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const updateCourseData = async () => {
+  const updateCourseData = async firebase => {
     setIsLoading(true);
     const currDay = dayMap[props.selectedDay];
     var courses = [];
@@ -108,7 +108,7 @@ const AvailabilityList = props => {
       questions = [];
       for (let question in rawData[currDay][time].questions) {
         curr = rawData[currDay][time].questions[question];
-        curr = await getQuestionFromReference(curr);
+        curr = await getQuestionFromReference(curr, firebase);
         questions.push({
           TA: curr.TA,
           answer: curr.answer,
@@ -133,14 +133,17 @@ const AvailabilityList = props => {
       .get()
       .then(doc => {
         rawData = doc.data().OH;
-        updateCourseData();
+        updateCourseData(firebase);
       });
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    updateCourseData();
-  }, [props.selectedDay, rawData]);
+  useFirebase(
+    firebase => {
+      setIsLoading(true);
+      updateCourseData(firebase);
+    },
+    [props.selectedDay, rawData]
+  );
 
   return (
     <div className="container">
