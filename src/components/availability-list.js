@@ -54,8 +54,16 @@ const AvailabilityDropdown = ({ hour, courses, course, times, day }) => {
   } else {
     hourString += 'am';
   }
-
-  hourString += ` (${hour.length})`;
+  const numAvailable = hour.reduce((acc, idx) => {
+    if (courses[idx] === undefined) return acc + 0;
+    const temp = courses[idx];
+    let avail = temp.reduce((a, item) => {
+      if (item['question'] === '') return a + 1;
+      return a + 0;
+    }, 0);
+    return acc + avail;
+  }, 0);
+  hourString += ` (${numAvailable} / ${hour.length} Available)`;
 
   return (
     <>
