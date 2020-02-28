@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import { useFirebase } from 'gatsby-plugin-firebase';
 import algoliasearch from 'algoliasearch/lite';
@@ -7,7 +7,6 @@ import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
 import Layout from '../components/layout';
 import QuickBookings from '../components/quick-booking';
 import Appointment from '../components/upcoming-appointment';
-import { useState } from 'react';
 
 import '../static/algolia.css';
 
@@ -17,7 +16,11 @@ import '../static/algolia.css';
 // based on the user that is currently logged on
 const CourseSelection = () => {
   const [courses, setCourses] = useState([]);
-  const searchClient = algoliasearch('questions', 'SEARCHKEY');
+  const searchClient = algoliasearch(
+    'YOO25R596Q',
+    '0360826a23c01595951395b93a51a253'
+  );
+
   useFirebase(firebase => {
     firebase
       .firestore()
@@ -33,11 +36,15 @@ const CourseSelection = () => {
 
   return (
     <Layout>
-      <InstantSearch indexName="lol" searchClient={searchClient}>
-        <SearchBox />
+      <InstantSearch
+        indexName="office_hours_questions"
+        searchClient={searchClient}
+      >
+        <SearchBox showLoadingIndicator />
+        <Hits></Hits>
       </InstantSearch>
       <Appointment />
-      {courses ? <QuickBookings courses={courses} /> : <p>...</p>}
+      {courses !== undefined ? <QuickBookings courses={courses} /> : <></>}
 
       <h3 className="is-size-4 has-text-weight-bold">Select Your Course</h3>
       {courses.length == 0 ? (

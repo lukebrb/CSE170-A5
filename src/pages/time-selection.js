@@ -17,7 +17,13 @@ function TimeSelectionPage({ search }) {
     <Layout>
       <NavigationBar extend={false} parents={['Home', 'Time Selection']} />
       <MiniCalendar updateDay={updateDay} />
-      <AvailabilityList selectedDay={selectedDay} course={course} />
+      {selectedDay !== undefined ? (
+        <AvailabilityList selectedDay={selectedDay} course={course} />
+      ) : (
+        <div className="box is-loading">
+          <progress className="progress is-medium is-grey-lighter" max="100" />
+        </div>
+      )}
     </Layout>
   );
 }

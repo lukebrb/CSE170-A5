@@ -5,7 +5,9 @@ import Collapsible from 'react-collapsible';
 
 import '../static/dropdown.css';
 import downSVG from '../images/chevron-down.svg';
-import bundleCourses from '../helpers/bundle-courses';
+import bundleCourses, {
+  getQuestionFromReference,
+} from '../helpers/bundle-courses';
 
 const Item = ({ time, questions, course, day }) => {
   if (questions === undefined) {
@@ -92,18 +94,21 @@ var rawData = {};
 const AvailabilityList = props => {
   const [courseData, setCourseData] = React.useState();
   const [timeSlots, setTimeSlots] = React.useState();
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const updateCourseData = () => {
+  const updateCourseData = async () => {
+    setIsLoading(true);
     const currDay = dayMap[props.selectedDay];
     var courses = [];
     var times = [];
     var questions = [];
     var curr;
-
+    if (rawData === undefined) return null;
     for (let time in rawData[currDay]) {
       questions = [];
       for (let question in rawData[currDay][time].questions) {
         curr = rawData[currDay][time].questions[question];
+        curr = await getQuestionFromReference(curr);
         questions.push({
           TA: curr.TA,
           answer: curr.answer,
@@ -116,10 +121,11 @@ const AvailabilityList = props => {
     }
     setTimeSlots(times);
     setCourseData(courses);
-    console.log(bundleCourses(times));
+    setIsLoading(false);
   };
 
   useFirebase(firebase => {
+    setIsLoading(true);
     firebase
       .firestore()
       .collection('courses')
@@ -127,31 +133,36 @@ const AvailabilityList = props => {
       .get()
       .then(doc => {
         rawData = doc.data().OH;
-
         updateCourseData();
       });
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     updateCourseData();
   }, [props.selectedDay, rawData]);
 
   return (
     <div className="container">
-      <AvailabilityDropdown />
-      {timeSlots ? (
-        bundleCourses(timeSlots).map((hour, idx) => (
-          <AvailabilityDropdown
-            hour={hour}
-            key={idx}
-            courses={courseData}
-            course={props.course}
-            day={dayMap[props.selectedDay]}
-            times={timeSlots}
-          />
-        ))
+      {!isLoading ? (
+        timeSlots.length > 0 ? (
+          bundleCourses(timeSlots).map((hour, idx) => (
+            <AvailabilityDropdown
+              hour={hour}
+              key={idx}
+              courses={courseData}
+              course={props.course}
+              day={dayMap[props.selectedDay]}
+              times={timeSlots}
+            />
+          ))
+        ) : (
+          <p>No TAs are scheduled for today.</p>
+        )
       ) : (
-        <p>No TAs are scheduled for today.</p>
+        <div className="box is-loading">
+          <progress className="progress is-medium is-grey-lighter" max="100" />
+        </div>
       )}
     </div>
   );
