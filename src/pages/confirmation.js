@@ -44,7 +44,7 @@ const ConfirmationPage = ({ search }) => {
                       objectID: ref.id
                     };
 
-        //index.saveObject(qData);
+        index.saveObject(qData);
 
         firebase.functions()
           .httpsCallable('newQuestion')({
