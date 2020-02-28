@@ -98,15 +98,19 @@ const AvailabilityList = props => {
 
   const updateCourseData = async firebase => {
     setIsLoading(true);
+    if (rawData === undefined) return null;
     const currDay = dayMap[props.selectedDay];
+    if (rawData[currDay] === undefined) return null;
     var courses = [];
     var times = [];
     var questions = [];
     var curr;
-    if (rawData === undefined) return null;
     for (let time in rawData[currDay]) {
       questions = [];
       for (let question in rawData[currDay][time].questions) {
+        if (rawData[currDay][time] === undefined) {
+          break;
+        }
         curr = rawData[currDay][time].questions[question];
         curr = await getQuestionFromReference(curr, firebase);
         questions.push({

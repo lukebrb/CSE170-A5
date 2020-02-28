@@ -71,7 +71,6 @@ const CourseSelection = () => {
         <CustomHits />
       </InstantSearch>
       <Appointment />
-      {courses !== undefined ? <QuickBookings courses={courses} /> : <></>}
 
       <h3 className="is-size-4 has-text-weight-bold">Select Your Course</h3>
       {courses.length == 0 ? (

@@ -1,25 +1,21 @@
-import React from "react"
+import React from 'react';
 
-import Layout from "../components/layout"
-import SEO from "../components/seo"
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 
-import CourseSelection from './course-selection'
-import LoginPage from './login'
+import CourseSelection from './course-selection';
+import LoginPage from './login';
 
-import { isLoggedIn } from '../auth'
+import { isLoggedIn } from '../auth';
 
-function HomePage () {
+function HomePage() {
   const [loggedIn, newLogin] = React.useState(false);
 
   React.useEffect(() => {
-    newLogin(isLoggedIn)
-  }, [])
+    newLogin(isLoggedIn);
+  }, []);
 
-  return (
-    (loggedIn) ? 
-      <CourseSelection /> : 
-      <LoginPage login={newLogin}/>
-  )
+  return loggedIn ? <CourseSelection /> : <LoginPage login={newLogin} />;
 }
-      
-export default HomePage
+
+export default HomePage;
