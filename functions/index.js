@@ -7,31 +7,11 @@ admin.initializeApp();
 const db = admin.firestore();
 
 const env = functions.config();
-
-const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
-const index = client.initIndex('office_hours_questions');
-
-// For when new questions are created
-exports.indexNewQuestion = functions.firestore
-  .document('questions/{questionID}')
-  .onCreate((snap, context) => {
-    const data = snap.data();
-    const objID = snap.id;
-
-    return index.addObject({
-      objID,
-      ...data
-    })
-  })
-
-// For removing questions
-exports.removeQuestionIndex = functions.firestore
-  .document('questions/{questionID}')
-  .onDelete((snap, context) => {
-    const objID = snap.id;
-
-    return index.deleteObject(objID)
-  })
+//     const algolia = algoliasearch(
+//       'YOO25R596Q',
+//       '527e21ccf63d7664fe1a99aa349e2a3f'
+//     );
+//     const index = algolia.initIndex('office_hours_questions');
 
 // Returns OH for selected course
 exports.getOH = functions.https.onCall( async (course) => {
@@ -56,4 +36,38 @@ exports.getOH = functions.https.onCall( async (course) => {
       }
       return OH;
     })    
+})
+
+exports.newQuestion = functions.https.onCall( data => {
+  const {course, TA, answer, location, question, time, day, path} = data;
+  const key = 'OH.' + day + '.' + time + '.questions';
+
+  db.collection("courses")
+    .doc(course)
+    .get()
+    .then(doc => {
+      var OH = doc.data().OH;
+
+      for (let q in OH[day][time].questions) {
+        let qPath = OH[day][time].questions[q];
+
+        db.doc(qPath)
+          .get()
+          .then(doc => {
+            if ( TA === doc.data().TA  && doc.data().question === '') {
+              db.collection('courses')
+                .doc(course)
+                .update({
+                  [key]: admin.firestore.FieldValue.arrayRemove(qPath)
+                }).then(() => {
+                  db.collection('courses')
+                    .doc(course)
+                    .update({
+                      [key]: admin.firestore.FieldValue.arrayUnion(path)
+                    })
+                })
+            }
+          })
+      }
+    })
 })
