@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import { useFirebase } from 'gatsby-plugin-firebase';
 import algoliasearch from 'algoliasearch/lite';
-import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
+import { InstantSearch, SearchBox, connectHits } from 'react-instantsearch-dom';
 
 import Layout from '../components/layout';
 import QuickBookings from '../components/quick-booking';
@@ -10,16 +10,43 @@ import Appointment from '../components/upcoming-appointment';
 
 import '../static/algolia.css';
 
-// import Card from "../components/course-card"
+const Hits = ({ hits }) => (
+  <ul>
+    {hits.map(hit => (
+      <li key={hit.objectID}>
+        {' '}
+        {hit.TA} {hit.location} {hit.question}
+      </li>
+    ))}
+  </ul>
+);
+
+const CustomHits = connectHits(Hits);
 
 // This page will need to dynamically update what courses are shown
 // based on the user that is currently logged on
 const CourseSelection = () => {
   const [courses, setCourses] = useState([]);
-  const searchClient = algoliasearch(
+  const algoliaClient = algoliasearch(
     'YOO25R596Q',
     '0360826a23c01595951395b93a51a253'
   );
+
+  const searchClient = {
+    search(requests) {
+      if (requests[0].params.query === '') {
+        return Promise.resolve({
+          results: requests.map(() => ({
+            hits: [],
+            nbHits: 0,
+            nbPages: 0,
+            processingTimeMS: 0,
+          })),
+        });
+      }
+      return algoliaClient.search(requests);
+    },
+  };
 
   useFirebase(firebase => {
     firebase
@@ -41,7 +68,7 @@ const CourseSelection = () => {
         searchClient={searchClient}
       >
         <SearchBox showLoadingIndicator />
-        <Hits></Hits>
+        <CustomHits />
       </InstantSearch>
       <Appointment />
       {courses !== undefined ? <QuickBookings courses={courses} /> : <></>}
