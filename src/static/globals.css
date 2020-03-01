@@ -11,6 +11,10 @@ div {
   background-color: var(--neu-bg-color);
 }
 
+.navbar {
+  background-color: var(--neu-bg-color);
+}
+
 #firebaseui_container > .firebaseui-container {
   background-color: var(--neu-bg-color);
 }
