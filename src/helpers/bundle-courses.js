@@ -1,19 +1,3 @@
-import { useFirebase } from 'gatsby-plugin-firebase';
-
-export const getQuestionFromReference = async (UID, firebase) => {
-  var res = {};
-  if (UID === undefined) return res;
-
-  return firebase
-    .firestore()
-    .collection('questions')
-    .doc(UID.split('/')[1])
-    .get()
-    .then(doc => {
-      return doc.data();
-    });
-};
-
 // Returns: an array of arrays
 export default times => {
   if (times.length === 0) {
