@@ -9,6 +9,7 @@
     "algoliasearch": "^4.0.3",
     "apexcharts": "^3.15.5",
     "bulma": "^0.8.0",
+    "date-fns": "^2.10.0",
     "firebase": "^7.8.1",
     "gatsby": "^2.19.7",
     "gatsby-cli": "^2.9.0",
