@@ -7,6 +7,7 @@ import Layout from '../components/layout';
 import MiniCalendar from '../components/mini-calendar';
 import Appointments from '../components/appointment-list';
 import withLocation from '../components/withLocation';
+import AvailabilityTabs from '../components/time-selection/availability-tabs';
 
 const DAY_KEYS = [
   'monday',
@@ -21,6 +22,7 @@ const DAY_KEYS = [
 function TimeSelectionPage({ search }) {
   const { course } = search;
   const [slotData, setSlotData] = useState(undefined);
+  const [showAll, setShowAll] = useState(true);
   // By default, the day selected is today.
   var [selectedDay, updateDay] = useState(0);
   // Get data on first load only.
@@ -40,7 +42,9 @@ function TimeSelectionPage({ search }) {
 
   return (
     <Layout>
+      <h1>{course}</h1>
       <MiniCalendar updateDay={updateDay} />
+      <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} />
       <Appointments dayItems={slotData !== undefined ? getDay() : undefined} />
     </Layout>
   );

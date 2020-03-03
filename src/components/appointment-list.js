@@ -63,18 +63,10 @@ const Slot = ({ quarterHour }) => {
         >
           <div className="notification">
             <ul>
-              <li>
-                {'{'}answer{'}'}
-              </li>
-              <li>
-                {'{'}location{'}'}
-              </li>
-              <li>
-                {'{'}question{'}'}
-              </li>
-              <li>
-                {'{'}TA{'}'}
-              </li>
+              <li>{answer}</li>
+              <li>{location}</li>
+              <li>{question}</li>
+              <li>{TA}</li>
             </ul>
           </div>
         </div>

@@ -8,6 +8,10 @@ import Layout from '../components/layout';
 import QuickBookings from '../components/quick-booking';
 import Appointment from '../components/upcoming-appointment';
 
+/**
+ * Algolia-related things
+ */
+
 import '../static/algolia.css';
 
 const Hits = ({ hits }) => (
@@ -22,31 +26,35 @@ const Hits = ({ hits }) => (
 );
 
 const CustomHits = connectHits(Hits);
+const algoliaClient = algoliasearch(
+  'YOO25R596Q', // pls dont steal our api key thx
+  '0360826a23c01595951395b93a51a253' // environment variables are annoying
+);
+
+const searchClient = {
+  search(requests) {
+    if (requests[0].params.query === '') {
+      return Promise.resolve({
+        results: requests.map(() => ({
+          hits: [],
+          nbHits: 0,
+          nbPages: 0,
+          processingTimeMS: 0,
+        })),
+      });
+    }
+    return algoliaClient.search(requests);
+  },
+};
+
+/**
+ * END Algolia stuff
+ */
 
 // This page will need to dynamically update what courses are shown
 // based on the user that is currently logged on
 const CourseSelection = () => {
   const [courses, setCourses] = useState([]);
-  const algoliaClient = algoliasearch(
-    'YOO25R596Q',
-    '0360826a23c01595951395b93a51a253'
-  );
-
-  const searchClient = {
-    search(requests) {
-      if (requests[0].params.query === '') {
-        return Promise.resolve({
-          results: requests.map(() => ({
-            hits: [],
-            nbHits: 0,
-            nbPages: 0,
-            processingTimeMS: 0,
-          })),
-        });
-      }
-      return algoliaClient.search(requests);
-    },
-  };
 
   useFirebase(firebase => {
     firebase
@@ -80,30 +88,32 @@ const CourseSelection = () => {
       ) : (
         courses.map(course => (
           <Link to={'/time-selection/?course=' + course[0]} key={course[1]}>
-            <div className="card" style={{ marginBottom: 10 }}>
-              <div className="card-content">
-                <div className="media">
-                  <div className="media-left">
-                    <figure className="image is-48x48">
-                      <img
-                        src={`https://picsum.photos/100?random=${course[1]}`}
-                        alt="Placeholder image"
-                      />
-                    </figure>
-                  </div>
-                  <div className="media-content">
-                    <p className="title is-4 is-family-sans-serif">
-                      {course[1]}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CourseCard>{course[1]}</CourseCard>
           </Link>
         ))
       )}
     </Layout>
   );
 };
+
+const CourseCard = ({ children }) => (
+  <div className="card" style={{ marginBottom: 10 }}>
+    <div className="card-content">
+      <div className="media">
+        <div className="media-left">
+          <figure className="image is-48x48">
+            <img
+              src={`https://picsum.photos/100?random=${children}`}
+              alt="Placeholder image"
+            />
+          </figure>
+        </div>
+        <div className="media-content">
+          <p className="title is-4 is-family-sans-serif">{children}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default CourseSelection;
