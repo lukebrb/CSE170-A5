@@ -4,7 +4,6 @@ import { useFirebase } from 'gatsby-plugin-firebase';
 import Collapsible from 'react-collapsible';
 
 import '../static/dropdown.css';
-import downSVG from '../images/chevron-down.svg';
 import bundleCourses, {
   getQuestionFromReference,
 } from '../helpers/bundle-courses';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as R from 'ramda';
 import { useFirebase } from 'gatsby-plugin-firebase';
 
-import NavigationBar from '../components/navigation-bar';
+// import NavigationBar from '../components/navigation-bar';
 import Layout from '../components/layout';
 import MiniCalendar from '../components/mini-calendar';
 import Appointments from '../components/appointment-list';
@@ -22,8 +22,13 @@ function TimeSelectionPage({ search }) {
   const { course } = search;
   const [slotData, setSlotData] = useState(undefined);
   // By default, the day selected is today.
-  var [selectedDay, updateDay] = useState('monday');
+  var [selectedDay, updateDay] = useState(0);
   // Get data on first load only.
+  const getDay = () => {
+    const res = R.prop(DAY_KEYS[selectedDay], slotData);
+    if (res === undefined) return [];
+    return res;
+  };
   useFirebase(firebase => {
     firebase
       .functions()
@@ -36,7 +41,7 @@ function TimeSelectionPage({ search }) {
   return (
     <Layout>
       <MiniCalendar updateDay={updateDay} />
-      <Appointments dayItems={R.prop(DAY_KEYS[selectedDay], slotData)} />
+      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} />
     </Layout>
   );
 }
