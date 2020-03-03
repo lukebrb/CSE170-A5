@@ -1,49 +1,84 @@
-import React, { useEffect } from 'react';
-import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import {
+  range,
+  lensProp,
+  set,
+  split,
+  compose,
+  head,
+  partial,
+  partialRight,
+} from 'ramda';
+import { getDate, addDays, format, formatRelative } from 'date-fns';
 
-const dates = [
-  {
-    symbol: 'M', // TODO -  symbol will need to be mapped to current date
-    number: moment()
-      .day(1)
-      .date(),
-  },
-  {
-    symbol: 'Tu',
-    number: moment()
-      .day(2)
-      .date(),
-  },
-  { symbol: 'W', number: 19 },
-  { symbol: 'Th', number: 20 },
-  { symbol: 'F', number: 21 },
-  { symbol: 'Sa', number: 22 },
-  { symbol: 'Su', number: 23 },
-];
+const DAYS_TO_VIEW = 7;
 
-function MiniCalendar(props) {
+// The minicalendar itself.
+export default ({ updateDay }) => {
+  const [dates, setDates] = useState(getDays());
+  const [currDateOffset, setCurrDateOffset] = useState(0);
+
   useEffect(() => {
-    props.updateDay(dates[0].symbol);
+    updateDay(dates[0].symbol);
   }, []);
 
-  return (
-    <nav className="pagination" role="navigation" aria-label="pagination">
-      <ul className="pagination-list date-tray">
-        {dates.map(date => (
-          <li key={date.number}>
-            <a
-              onClick={() => {
-                props.updateDay(date.symbol);
-              }}
-              className="pagination-link content is-size-7"
-            >
-              {date.symbol} <br></br> {date.number}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
+  const DateButtons = () =>
+    dates.map(({ number, symbol, isSelected }, idx) => (
+      <li key={number}>
+        <a
+          onClick={e => {
+            e.stopPropagation();
+            updateDay(symbol); // Callback function to parent element
+            setDates(asSelected(dates, idx));
+            setCurrDateOffset(idx);
+          }}
+          className={`pagination-link content is-size-7 ${
+            isSelected ? 'is-pressed' : ''
+          }`}
+        >
+          {symbol} <br></br> {number}
+        </a>
+      </li>
+    ));
 
-export default MiniCalendar;
+  return (
+    <>
+      <br />
+      <nav className="pagination" role="navigation" aria-label="pagination">
+        <ul className="pagination-list date-tray">
+          <DateButtons />
+        </ul>
+      </nav>{' '}
+      <h1 className="content is-size-4 is-capitalized">
+        {getRelativeDate(currDateOffset)}
+      </h1>
+    </>
+  );
+};
+
+/**
+ * Helper functions
+ */
+
+// Auto generate the days and new symbols
+const getDays = () =>
+  range(0, DAYS_TO_VIEW).map(offset => ({
+    symbol: format(addDays(new Date(), offset), 'EEEEEE'),
+    number: getDate(addDays(new Date(), offset)),
+    isSelected: offset === 0 ? true : false,
+  }));
+
+// Update state to reflect which item is selected
+const asSelected = (currState, indexToChange) =>
+  currState.map((date, idx) => {
+    const slens = lensProp('isSelected');
+    return set(slens, indexToChange === idx, date);
+  });
+
+// Gets the relative date by offset
+const getRelativeDate = compose(
+  head,
+  partial(split, [' ']),
+  partialRight(formatRelative, [new Date()]),
+  partial(addDays, [new Date()])
+);
