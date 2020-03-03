@@ -89,11 +89,11 @@ const AvailabilityDropdown = ({ hour, courses, course, times, day }) => {
 
 const dayMap = {
   Su: 'sunday',
-  M: 'monday',
+  Mo: 'monday',
   Tu: 'tuesday',
-  W: 'wednesday',
+  We: 'wednesday',
   Th: 'thursday',
-  F: 'friday',
+  Fr: 'friday',
   Sa: 'saturday',
 };
 
@@ -105,10 +105,11 @@ const AvailabilityList = props => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const updateCourseData = () => {
-    setIsLoading(true);
     if (rawData === undefined) return null;
+    // get name of day selected 'i.e. "tuesday"
     const currDay = dayMap[props.selectedDay];
     if (rawData[currDay] === undefined) return null;
+
     var courses = [];
     var times = [];
     var questions = [];
@@ -144,7 +145,8 @@ const AvailabilityList = props => {
       .then(res => {
         rawData = res.data;
         updateCourseData();
-      })
+      });
+    setIsLoading(false);
   }, []);
 
   useFirebase(

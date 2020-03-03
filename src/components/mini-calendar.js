@@ -9,7 +9,7 @@ import {
   partial,
   partialRight,
 } from 'ramda';
-import { getDate, addDays, format, formatRelative } from 'date-fns';
+import { getDate, addDays, format, formatRelative, getDay } from 'date-fns';
 
 const DAYS_TO_VIEW = 7;
 
@@ -19,16 +19,16 @@ export default ({ updateDay }) => {
   const [currDateOffset, setCurrDateOffset] = useState(0);
 
   useEffect(() => {
-    updateDay(dates[0].symbol);
+    updateDay(dates[0].index);
   }, []);
 
   const DateButtons = () =>
-    dates.map(({ number, symbol, isSelected }, idx) => (
+    dates.map(({ number, symbol, isSelected, index }, idx) => (
       <li key={number}>
         <a
           onClick={e => {
             e.stopPropagation();
-            updateDay(symbol); // Callback function to parent element
+            updateDay(index); // Callback function to parent element
             setDates(asSelected(dates, idx));
             setCurrDateOffset(idx);
           }}
@@ -64,6 +64,7 @@ export default ({ updateDay }) => {
 const getDays = () =>
   range(0, DAYS_TO_VIEW).map(offset => ({
     symbol: format(addDays(new Date(), offset), 'EEEEEE'),
+    index: getDay(addDays(new Date(), offset)) - 1,
     number: getDate(addDays(new Date(), offset)),
     isSelected: offset === 0 ? true : false,
   }));

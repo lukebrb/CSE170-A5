@@ -1,29 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import * as R from 'ramda';
+import { useFirebase } from 'gatsby-plugin-firebase';
 
 import NavigationBar from '../components/navigation-bar';
-
 import Layout from '../components/layout';
 import MiniCalendar from '../components/mini-calendar';
-import AvailabilityList from '../components/availability-list';
-
+import Appointments from '../components/appointment-list';
 import withLocation from '../components/withLocation';
 
-function TimeSelectionPage({ search }) {
-  var [selectedDay, updateDay] = React.useState();
+const DAY_KEYS = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+];
 
+function TimeSelectionPage({ search }) {
   const { course } = search;
+  const [slotData, setSlotData] = useState(undefined);
+  // By default, the day selected is today.
+  var [selectedDay, updateDay] = useState('monday');
+  // Get data on first load only.
+  useFirebase(firebase => {
+    firebase
+      .functions()
+      .httpsCallable('getOH')(course)
+      .then(res => {
+        setSlotData(res.data);
+      });
+  }, []);
 
   return (
     <Layout>
-      <NavigationBar extend={false} parents={['Home', 'Time Selection']} />
       <MiniCalendar updateDay={updateDay} />
-      {selectedDay !== undefined ? (
-        <AvailabilityList selectedDay={selectedDay} course={course} />
-      ) : (
-        <div className="box is-loading">
-          <progress className="progress is-medium is-grey-lighter" max="100" />
-        </div>
-      )}
+      <Appointments dayItems={R.prop(DAY_KEYS[selectedDay], slotData)} />
     </Layout>
   );
 }
