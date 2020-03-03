@@ -49,7 +49,7 @@ export default ({ updateDay }) => {
           <DateButtons />
         </ul>
       </nav>{' '}
-      <h1 className="content is-size-4 is-capitalized">
+      <h1 className="content is-size-5 is-capitalized">
         {getRelativeDate(currDateOffset)}
       </h1>
     </>
