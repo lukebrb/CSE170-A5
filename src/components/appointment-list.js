@@ -61,19 +61,13 @@ const groupByTimeValAgain = R.groupWith((a, b) =>
   R.equals(getTimeVal(a), getTimeVal(b))
 );
 // Self-explanatory
-const getTimeVal = R.pipe(R.prop(0), R.prop(1), R.prop('timeVal'));
-const getMinute = R.pipe(
-  R.prop(0),
-  R.prop(0),
-  R.split(':', R.__),
-  R.last,
-  parseInt
-);
+const getTimeVal = R.path([0, 1, 'timeVal']);
+const getMinute = R.pipe(R.path([0, 0]), R.split(':', R.__), R.last, parseInt);
 
 // Compares two timeslot items, and sorts them based on two separate properties
 const diffTimes = (a, b) => {
   const timeVals = R.map(getTimeVal, [a, b]);
-  if (timeVals[0] === timeVals[1]) {
+  if (R.equals(timeVals[0], timeVals[1])) {
     return getMinute(a) - getMinute(b);
   }
   return timeVals[0] - timeVals[1];
