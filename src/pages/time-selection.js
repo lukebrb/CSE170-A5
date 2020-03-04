@@ -23,6 +23,7 @@ function TimeSelectionPage({ search }) {
   const { course } = search;
   const [slotData, setSlotData] = useState(undefined);
   const [showAll, setShowAll] = useState(true);
+  const [firebase, setFirebase] = useState();
   // By default, the day selected is today.
   var [selectedDay, updateDay] = useState(0);
   // Get data on first load only.
@@ -38,14 +39,15 @@ function TimeSelectionPage({ search }) {
       .then(res => {
         setSlotData(res.data);
       });
+    setFirebase(firebase);
   }, []);
 
   return (
     <Layout>
       <h1 className="is-size-5 has-text-weight-bold">{course}</h1>
-      <MiniCalendar updateDay={updateDay} />
-      <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} />
-      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} />
+      <MiniCalendar updateDay={updateDay} firebase={firebase} />
+      <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} firebase={firebase} />
+      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} firebase={firebase} />
     </Layout>
   );
 }

@@ -14,7 +14,7 @@ import { getDate, addDays, format, formatRelative, getDay } from 'date-fns';
 const DAYS_TO_VIEW = 7;
 
 // The minicalendar itself.
-export default ({ updateDay }) => {
+export default ({ updateDay, firebase }) => {
   const [dates, setDates] = useState(getDays());
   const [currDateOffset, setCurrDateOffset] = useState(0);
 
