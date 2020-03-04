@@ -8,7 +8,7 @@ import Collapsible from 'react-collapsible';
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ isShowingAll, dayItems }) => {
+export default ({ dayItems, firebase }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
@@ -25,7 +25,7 @@ export default ({ isShowingAll, dayItems }) => {
     }
 
     return items.map((slotData, idx) => (
-      <TimeDropdown data={slotData} key={idx} />
+      <TimeDropdown data={slotData} key={idx} firebase={firebase} />
     ));
   };
   return (
@@ -40,21 +40,20 @@ export default ({ isShowingAll, dayItems }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data }) => {
-  const hour = getHour(data);
-  return (
-    <Collapsible
-      trigger={getHour(data)}
-      transitionTime={200}
-      triggerTagName="div"
-      key={getHour(data)}
-    >
-      {data.map(quarterHour => (
-        <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />
-      ))}
-    </Collapsible>
-  );
-};
+const TimeDropdown = ({ data, firebase }) => (
+  <Collapsible
+    trigger={getHour(data)}
+    transitionTime={200}
+    triggerTagName="div"
+    key={getHour(data)}
+    onOpen={() => firebase.analytics().logEvent('open_timeslot_tab')}
+    onClose={() => firebase.analytics().logEvent('close_timeslot_tab')}
+  >
+    {data.map(quarterHour => (
+      <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />
+    ))}
+  </Collapsible>
+);
 
 // Each individual 15-min mark is encapsulated here.
 const Slot = ({ quarterHour }) => {

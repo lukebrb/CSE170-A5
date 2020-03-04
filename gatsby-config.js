@@ -14,17 +14,29 @@ module.exports = {
           auth: true,
           firestore: true,
           storage: true,
-          functions: true
+          functions: true,
+          analytics: true
         },
         credentials: {
-          apiKey: "AIzaSyDrMQJASkZxLYg8QhUSo-5ahAMYBOIzJYM",
-          authDomain: "cse170-openbook.firebaseapp.com",
-          databaseURL: "https://cse170-openbook.firebaseio.com",
-          projectId: "cse170-openbook",
-          storageBucket: "cse170-openbook.appspot.com",
-          messagingSenderId: "669786581098",
-          appId: "1:669786581098:web:865af162877b94c1a8c213",
-          measurementId: "G-V1E8KXRJY5"
+          // THIS IS THE PRODUCTION PROJECT
+          // apiKey: "AIzaSyDrMQJASkZxLYg8QhUSo-5ahAMYBOIzJYM",
+          // authDomain: "cse170-openbook.firebaseapp.com",
+          // databaseURL: "https://cse170-openbook.firebaseio.com",
+          // projectId: "cse170-openbook",
+          // storageBucket: "cse170-openbook.appspot.com",
+          // messagingSenderId: "6697865 81098",
+          // appId: "1:669786581098:web:865af162877b94c1a8c213",
+          // measurementId: "G-V1E8KXRJY5"
+
+          // THIS IS THE TEST PROJECT
+          apiKey: "AIzaSyC7DsiZYWBJet7DGr4jgge7yZwfLktAIjE",
+          authDomain: "cse170-openbook-testing.firebaseapp.com",
+          databaseURL: "https://cse170-openbook-testing.firebaseio.com",
+          projectId: "cse170-openbook-testing",
+          storageBucket: "cse170-openbook-testing.appspot.com",
+          messagingSenderId: "395170657181",
+          appId: "1:395170657181:web:af335ab36985245668b574",
+          measurementId: "G-KWK6TQJMTV"
         }
       }
     },
