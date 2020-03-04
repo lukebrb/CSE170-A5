@@ -45,7 +45,10 @@ function TimeSelectionPage({ search }) {
       <h1 className="is-size-5 has-text-weight-bold">{course}</h1>
       <MiniCalendar updateDay={updateDay} />
       <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} />
-      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} />
+      <Appointments
+        isShowingAll={showAll}
+        dayItems={slotData !== undefined ? getDay() : undefined}
+      />
     </Layout>
   );
 }

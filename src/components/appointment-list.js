@@ -8,7 +8,7 @@ import Collapsible from 'react-collapsible';
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ dayItems }) => {
+export default ({ isShowingAll, dayItems }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
@@ -18,7 +18,12 @@ export default ({ dayItems }) => {
   const Dropdowns = () => {
     if (R.isEmpty(dayItems))
       return <h3>There are no available appointments today.</h3>;
-    const items = splitByHour(dayItems);
+    let items = splitByHour(dayItems);
+
+    if (!isShowingAll) {
+      items = filterAvailable(items);
+    }
+
     return items.map((slotData, idx) => (
       <TimeDropdown data={slotData} key={idx} />
     ));
@@ -35,18 +40,21 @@ export default ({ dayItems }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data }) => (
-  <Collapsible
-    trigger={getHour(data)}
-    transitionTime={200}
-    triggerTagName="div"
-    key={getHour(data)}
-  >
-    {data.map(quarterHour => (
-      <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />
-    ))}
-  </Collapsible>
-);
+const TimeDropdown = ({ data }) => {
+  const hour = getHour(data);
+  return (
+    <Collapsible
+      trigger={getHour(data)}
+      transitionTime={200}
+      triggerTagName="div"
+      key={getHour(data)}
+    >
+      {data.map(quarterHour => (
+        <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />
+      ))}
+    </Collapsible>
+  );
+};
 
 // Each individual 15-min mark is encapsulated here.
 const Slot = ({ quarterHour }) => {
@@ -107,3 +115,21 @@ const splitByHour = R.pipe(
   R.sort(diffTimes, R.__),
   groupByTimeValAgain // Messy, but it works.
 );
+
+// const filterAvailable = R.pipe(
+//   R.map,
+//   R.map,
+//   R.map,
+//   R.path([1, 'questions']),
+//   R.filter(R.isEmpty(R.prop('question')))
+// );
+
+// Sloppy, but if there's a better way using FP lmk
+const filterAvailable = finalData =>
+  finalData.map(i =>
+    i.map(j =>
+      j.map(k =>
+        k[1]['questions'].filter(({ question }) => R.isEmpty(question))
+      )
+    )
+  );
