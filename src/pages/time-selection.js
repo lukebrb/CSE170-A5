@@ -25,10 +25,10 @@ function TimeSelectionPage({ search }) {
   const [showAll, setShowAll] = useState(true);
   const [firebase, setFirebase] = useState();
   // By default, the day selected is today.
-  var [selectedDay, updateDay] = useState(0);
+  var [selectedDay, updateDay] = useState('monday');
   // Get data on first load only.
   const getDay = () => {
-    const res = R.prop(DAY_KEYS[selectedDay], slotData);
+    const res = R.prop(selectedDay, slotData);
     if (res === undefined) return [];
     return res;
   };
@@ -52,6 +52,7 @@ function TimeSelectionPage({ search }) {
         firebase={firebase}
       />
       <Appointments
+        isShowingAll={true}
         dayItems={slotData !== undefined ? getDay() : undefined}
         firebase={firebase}
       />

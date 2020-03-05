@@ -8,7 +8,7 @@ import Collapsible from 'react-collapsible';
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ dayItems, firebase }) => {
+export default ({ isShowingAll, dayItems, firebase }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
@@ -93,6 +93,7 @@ const groupByTimeValAgain = R.groupWith((a, b) =>
 // Self-explanatory
 const getTimeVal = R.path([0, 1, 'timeVal']);
 const getHour = R.pipe(
+  R.tap(console.log),
   R.path([0, 0, 1, 'timeVal']),
   parse(new Date(), 'H'),
   format('h b')
@@ -109,6 +110,7 @@ const diffTimes = (a, b) => {
 };
 
 const splitByHour = R.pipe(
+  R.tap(console.log),
   R.toPairs,
   groupByTimeVal,
   R.sort(diffTimes, R.__),
