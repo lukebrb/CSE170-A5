@@ -45,9 +45,9 @@ function TimeSelectionPage({ search }) {
   return (
     <Layout>
       <h1 className="is-size-5 has-text-weight-bold">{course}</h1>
-      <MiniCalendar updateDay={updateDay} firebase={firebase} />
-      <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} firebase={firebase} />
-      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} firebase={firebase} />
+      <MiniCalendar updateDay={updateDay} />
+      <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} />
+      <Appointments dayItems={slotData !== undefined ? getDay() : undefined} />
     </Layout>
   );
 }

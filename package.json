@@ -15,6 +15,7 @@
     "gatsby-cli": "^2.9.0",
     "gatsby-image": "^2.2.39",
     "gatsby-plugin-firebase": "^0.1.8",
+    "gatsby-plugin-google-gtag": "^1.1.22",
     "gatsby-plugin-manifest": "^2.2.39",
     "gatsby-plugin-offline": "^3.0.32",
     "gatsby-plugin-react-helmet": "^3.1.21",
@@ -50,7 +51,8 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "deploy": "firebase deploy --only hosting"
   },
   "repository": {
     "type": "git",
