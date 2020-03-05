@@ -8,7 +8,7 @@ import Collapsible from 'react-collapsible';
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ isShowingAll, dayItems, firebase }) => {
+export default ({ dayItems }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
@@ -25,7 +25,7 @@ export default ({ isShowingAll, dayItems, firebase }) => {
     }
 
     return items.map((slotData, idx) => (
-      <TimeDropdown data={slotData} key={idx} firebase={firebase} />
+      <TimeDropdown data={slotData} key={idx} />
     ));
   };
   return (
@@ -40,14 +40,28 @@ export default ({ isShowingAll, dayItems, firebase }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data, firebase }) => (
+const TimeDropdown = ({ data }) => (
   <Collapsible
     trigger={getHour(data)}
     transitionTime={200}
     triggerTagName="div"
     key={getHour(data)}
-    onOpen={() => firebase.analytics().logEvent('open_timeslot_tab')}
-    onClose={() => firebase.analytics().logEvent('close_timeslot_tab')}
+    onOpen={() => {
+      if (typeof window !== undefined) {
+        window.gtag('event', 'open-timeslot-dropdown', {
+          event_category: 'timeslot-dropdown',
+          event_label: 'user opened timeslot dropdown',
+        });
+      }
+    }}
+    onClose={() => {
+      if (typeof window !== undefined) {
+        window.gtag('event', 'close-timeslot-dropdown', {
+          event_category: 'timeslot-dropdown',
+          event_label: 'user closed timeslot dropdown',
+        });
+      }
+    }}
   >
     {data.map(quarterHour => (
       <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />

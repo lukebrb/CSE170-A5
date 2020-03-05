@@ -1,15 +1,18 @@
 import React from 'react';
 
-export default ({ isShowingAll, callback, firebase }) => {
+export default ({ isShowingAll, callback}) => {
   return (
     <div className="tabs is-centered">
       <ul>
         <li
           className={isShowingAll ? 'is-active' : ''}
           onClick={() => {
-            firebase.analytics().logEvent('switch_display_mode', {
-              showAll: true
-            })
+            if (typeof window !== undefined ) {
+              window.gtag('event', 'show-all-on', {
+                'event_category': 'switch-view-mode',
+                'event_label': 'user switched to "show all" mode'
+              })
+            }
             callback(true)
           }}
         >
@@ -18,9 +21,12 @@ export default ({ isShowingAll, callback, firebase }) => {
         <li
           className={isShowingAll ? '' : 'is-active'}
           onClick={() => {
-            firebase.analytics().logEvent('switch_display_mode', {
-              showAll: false
-            })
+            if (typeof window !== undefined ) {
+              window.gtag('event', 'show-all-off', {
+                'event_category': 'switch-view-mode',
+                'event_label': 'user switched to "show available only" mode'
+              })
+            }
             callback(false)
           }}
         >
