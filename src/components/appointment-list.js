@@ -8,7 +8,7 @@ import Collapsible from 'react-collapsible';
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ dayItems }) => {
+export default ({ isShowingAll, dayItems }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
