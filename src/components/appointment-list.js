@@ -5,7 +5,6 @@ import { parse, format } from 'date-fns/esm/fp';
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
 
-window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
@@ -44,7 +43,7 @@ export default ({ isShowingAll, dayItems, metadata }) => {
 
 // Contains up to 4 15-min marks
 const TimeDropdown = ({ data, metadata, isShowingAll }) => {
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = React.useState(false);
   if (!isShowingAll) {
     setIsHidden(dropdownIsEmpty(data));
   }
@@ -55,7 +54,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
       triggerTagName="div"
       key={getHour(data)}
       onOpen={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== "undefined") {
           window.gtag('event', 'open-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user opened timeslot dropdown',
@@ -63,7 +62,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
         }
       }}
       onClose={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== "undefined") {
           window.gtag('event', 'close-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user closed timeslot dropdown',

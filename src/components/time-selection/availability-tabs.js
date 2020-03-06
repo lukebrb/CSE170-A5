@@ -7,7 +7,7 @@ export default ({ isShowingAll, callback}) => {
         <li
           className={isShowingAll ? 'is-active' : ''}
           onClick={() => {
-            if (typeof window !== undefined ) {
+            if (typeof window !== undefined && typeof window.gtag !== 'undefined') {
               window.gtag('event', 'show-all-on', {
                 'event_category': 'switch-view-mode',
                 'event_label': 'user switched to "show all" mode'
@@ -21,7 +21,7 @@ export default ({ isShowingAll, callback}) => {
         <li
           className={isShowingAll ? '' : 'is-active'}
           onClick={() => {
-            if (typeof window !== undefined ) {
+            if (typeof window !== undefined && typeof window.gtag !== 'undefined') {
               window.gtag('event', 'show-all-off', {
                 'event_category': 'switch-view-mode',
                 'event_label': 'user switched to "show available only" mode'
