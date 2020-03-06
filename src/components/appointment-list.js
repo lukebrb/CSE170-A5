@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as R from 'ramda';
 import { parse, format } from 'date-fns/esm/fp';
 // Components
@@ -21,12 +21,13 @@ export default ({ isShowingAll, dayItems, metadata }) => {
       return <h3>There are no available appointments today.</h3>;
     let items = splitByHour(dayItems);
 
-    if (!isShowingAll) {
-      items = filterAvailable(items);
-    }
-
     return items.map((slotData, idx) => (
-      <TimeDropdown data={slotData} key={idx} metadata={metadata} />
+      <TimeDropdown
+        data={slotData}
+        key={idx}
+        metadata={metadata}
+        isShowingAll={isShowingAll}
+      />
     ));
   };
   return (
@@ -41,43 +42,57 @@ export default ({ isShowingAll, dayItems, metadata }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data, metadata }) => (
-  <Collapsible
-    trigger={getHour(data)}
-    transitionTime={200}
-    triggerTagName="div"
-    key={getHour(data)}
-    onOpen={() => {
-      if (typeof window !== undefined) {
-        window.gtag('event', 'open-timeslot-dropdown', {
-          event_category: 'timeslot-dropdown',
-          event_label: 'user opened timeslot dropdown',
-        });
-      }
-    }}
-    onClose={() => {
-      if (typeof window !== undefined) {
-        window.gtag('event', 'close-timeslot-dropdown', {
-          event_category: 'timeslot-dropdown',
-          event_label: 'user closed timeslot dropdown',
-        });
-      }
-    }}
-  >
-    {data.map(quarterHour => (
-      <Slot
-        quarterHour={quarterHour}
-        key={getMinute(quarterHour)}
-        metadata={metadata}
-      />
-    ))}
-  </Collapsible>
-);
+const TimeDropdown = ({ data, metadata, isShowingAll }) => {
+  const [isHidden, setIsHidden] = useState(false);
+  useEffect(() => {
+    if (!isShowingAll) {
+      setIsHidden(dropdownIsEmpty(data));
+    }
+  }, [isShowingAll]);
+  return isHidden ? null : (
+    <Collapsible
+      trigger={getHour(data)}
+      transitionTime={200}
+      triggerTagName="div"
+      key={getHour(data)}
+      onOpen={() => {
+        if (typeof window !== undefined) {
+          window.gtag('event', 'open-timeslot-dropdown', {
+            event_category: 'timeslot-dropdown',
+            event_label: 'user opened timeslot dropdown',
+          });
+        }
+      }}
+      onClose={() => {
+        if (typeof window !== undefined) {
+          window.gtag('event', 'close-timeslot-dropdown', {
+            event_category: 'timeslot-dropdown',
+            event_label: 'user closed timeslot dropdown',
+          });
+        }
+      }}
+    >
+      {data.map(quarterHour => (
+        <Slot
+          quarterHour={quarterHour}
+          key={getMinute(quarterHour)}
+          metadata={metadata}
+          isShowingAll={isShowingAll}
+        />
+      ))}
+    </Collapsible>
+  );
+};
 
 // Each individual 15-min mark is encapsulated here.
-const Slot = ({ quarterHour, metadata }) => {
+const Slot = ({ quarterHour, metadata, isShowingAll }) => {
   const [time, { questions }] = R.head(quarterHour);
-
+  if (
+    R.isEmpty(questions.filter(q => R.isEmpty(q.question))) &&
+    !isShowingAll
+  ) {
+    return null;
+  }
   return (
     <>
       {time}
@@ -129,8 +144,12 @@ const groupByTimeValAgain = R.groupWith((a, b) =>
 // Self-explanatory
 const getTimeVal = R.path([0, 1, 'timeVal']);
 const getHour = R.pipe(
+  R.tap(console.log),
   R.path([0, 0, 1, 'timeVal']),
+  R.tap(console.log),
+  status => (status === undefined ? 0 : status),
   parse(new Date(), 'H'),
+  R.tap(console.log),
   format('h b')
 );
 const getMinute = R.pipe(R.path([0, 0]), R.split(':', R.__), R.last, parseInt);
@@ -168,3 +187,13 @@ const filterAvailable = finalData =>
       )
     )
   );
+
+function dropdownIsEmpty(data) {
+  for (let qHour of data) {
+    const [time, { questions }] = R.head(qHour);
+    if (!R.isEmpty(questions.filter(q => R.isEmpty(q.question)))) {
+      return false;
+    }
+  }
+  return true;
+}
