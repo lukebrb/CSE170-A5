@@ -4,6 +4,7 @@ import { parse, format } from 'date-fns/esm/fp';
 // Components
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
+import { useEffect } from 'react';
 
 window.gtag = () => {};
 /**
@@ -45,9 +46,12 @@ export default ({ isShowingAll, dayItems, metadata }) => {
 // Contains up to 4 15-min marks
 const TimeDropdown = ({ data, metadata, isShowingAll }) => {
   const [isHidden, setIsHidden] = useState(false);
-  if (!isShowingAll) {
-    setIsHidden(dropdownIsEmpty(data));
-  }
+  useEffect(() => {
+    if (!isShowingAll) {
+      setIsHidden(dropdownIsEmpty(data));
+    }
+  }, [isShowingAll]);
+
   return isHidden ? null : (
     <Collapsible
       trigger={getHour(data)}
