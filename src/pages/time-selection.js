@@ -49,7 +49,7 @@ function TimeSelectionPage({ search }) {
       <MiniCalendar updateDay={updateDay} />
       <AvailabilityTabs isShowingAll={showAll} callback={setShowAll} />
       <Appointments
-        isShowingAll={true}
+        isShowingAll={showAll}
         dayItems={slotData !== undefined ? getDay() : undefined}
         metadata={{ course, selectedDay }}
       />

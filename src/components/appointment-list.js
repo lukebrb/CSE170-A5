@@ -5,6 +5,7 @@ import { parse, format } from 'date-fns/esm/fp';
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
 
+window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
@@ -21,12 +22,13 @@ export default ({ isShowingAll, dayItems, metadata }) => {
       return <h3>There are no available appointments today.</h3>;
     let items = splitByHour(dayItems);
 
-    if (!isShowingAll) {
-      items = filterAvailable(items);
-    }
-
     return items.map((slotData, idx) => (
-      <TimeDropdown data={slotData} key={idx} metadata={metadata} />
+      <TimeDropdown
+        data={slotData}
+        key={idx}
+        metadata={metadata}
+        isShowingAll={isShowingAll}
+      />
     ));
   };
   return (
@@ -41,71 +43,88 @@ export default ({ isShowingAll, dayItems, metadata }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data, metadata }) => (
-  <Collapsible
-    trigger={getHour(data)}
-    transitionTime={200}
-    triggerTagName="div"
-    key={getHour(data)}
-    onOpen={() => {
-      if (typeof window !== undefined) {
-        window.gtag('event', 'open-timeslot-dropdown', {
-          event_category: 'timeslot-dropdown',
-          event_label: 'user opened timeslot dropdown',
-        });
-      }
-    }}
-    onClose={() => {
-      if (typeof window !== undefined) {
-        window.gtag('event', 'close-timeslot-dropdown', {
-          event_category: 'timeslot-dropdown',
-          event_label: 'user closed timeslot dropdown',
-        });
-      }
-    }}
-  >
-    {data.map(quarterHour => (
-      <Slot
-        quarterHour={quarterHour}
-        key={getMinute(quarterHour)}
-        metadata={metadata}
-      />
-    ))}
-  </Collapsible>
-);
+const TimeDropdown = ({ data, metadata, isShowingAll }) => {
+  const [isHidden, setIsHidden] = useState(false);
+  if (!isShowingAll) {
+    setIsHidden(dropdownIsEmpty(data));
+  }
+  return isHidden ? null : (
+    <Collapsible
+      trigger={getHour(data)}
+      transitionTime={200}
+      triggerTagName="div"
+      key={getHour(data)}
+      onOpen={() => {
+        if (typeof window !== undefined) {
+          window.gtag('event', 'open-timeslot-dropdown', {
+            event_category: 'timeslot-dropdown',
+            event_label: 'user opened timeslot dropdown',
+          });
+        }
+      }}
+      onClose={() => {
+        if (typeof window !== undefined) {
+          window.gtag('event', 'close-timeslot-dropdown', {
+            event_category: 'timeslot-dropdown',
+            event_label: 'user closed timeslot dropdown',
+          });
+        }
+      }}
+    >
+      {data.map(quarterHour => (
+        <Slot
+          quarterHour={quarterHour}
+          key={getMinute(quarterHour)}
+          metadata={metadata}
+          isShowingAll={isShowingAll}
+        />
+      ))}
+    </Collapsible>
+  );
+};
 
 // Each individual 15-min mark is encapsulated here.
-const Slot = ({ quarterHour, metadata }) => {
+const Slot = ({ quarterHour, metadata, isShowingAll }) => {
   const [time, { questions }] = R.head(quarterHour);
-
+  if (
+    R.isEmpty(questions.filter(q => R.isEmpty(q.question))) &&
+    !isShowingAll
+  ) {
+    return null;
+  }
   return (
     <>
       {time}
       <br />
-      {questions.map(({ answer, location, question, TA }, idx) => (
-        <div
-          className="container"
-          key={answer + location + question + TA + idx}
-        >
-          <div className="notification">
-            <ul>
-              <li>{location}</li>
-              <li>{question}</li>
-              <li>{answer}</li>
-              <li>{TA}</li>
-            </ul>
-            {R.isEmpty(question) ? (
-              <BookButton
-                time={time}
-                course={metadata.course}
-                day={metadata.selectedDay}
-                location={location}
-                TA={TA}
-              />
-            ) : null}
+      {questions.map(({ answer, location, question, TA }, idx) => {
+        if (!isShowingAll && !R.isEmpty(question)) {
+          return null;
+        }
+        return (
+          <div
+            className="container"
+            key={answer + location + question + TA + idx}
+          >
+            <div className="notification">
+              <ul>
+                <li>{location}</li>
+                <li>{question}</li>
+                <li>{answer}</li>
+                <li>{TA}</li>
+              </ul>
+              {R.isEmpty(question) ? (
+                <BookButton
+                  time={time}
+                  course={metadata.course}
+                  day={metadata.selectedDay}
+                  location={location}
+                  TA={TA}
+                />
+              ) : null}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </>
   );
 };
@@ -151,20 +170,12 @@ const splitByHour = R.pipe(
   groupByTimeValAgain // Messy, but it works.
 );
 
-// const filterAvailable = R.pipe(
-//   R.map,
-//   R.map,
-//   R.map,
-//   R.path([1, 'questions']),
-//   R.filter(R.isEmpty(R.prop('question')))
-// );
-
-// Sloppy, but if there's a better way using FP lmk
-const filterAvailable = finalData =>
-  finalData.map(i =>
-    i.map(j =>
-      j.map(k =>
-        k[1]['questions'].filter(({ question }) => R.isEmpty(question))
-      )
-    )
-  );
+function dropdownIsEmpty(data) {
+  for (let qHour of data) {
+    const [time, { questions }] = R.head(qHour);
+    if (!R.isEmpty(questions.filter(q => R.isEmpty(q.question)))) {
+      return false;
+    }
+  }
+  return true;
+}
