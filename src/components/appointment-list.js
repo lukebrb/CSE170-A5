@@ -6,7 +6,6 @@ import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
 import { useEffect } from 'react';
 
-window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
@@ -59,7 +58,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
       triggerTagName="div"
       key={getHour(data)}
       onOpen={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== "undefined") {
           window.gtag('event', 'open-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user opened timeslot dropdown',
@@ -67,7 +66,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
         }
       }}
       onClose={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== "undefined") {
           window.gtag('event', 'close-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user closed timeslot dropdown',
