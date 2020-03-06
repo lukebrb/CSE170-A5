@@ -4,7 +4,6 @@ import { parse, format } from 'date-fns/esm/fp';
 // Components
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
-
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
@@ -97,30 +96,32 @@ const Slot = ({ quarterHour, metadata, isShowingAll }) => {
     <>
       {time}
       <br />
-      {questions.map(({ answer, location, question, TA }, idx) => (
-        <div
-          className="container"
-          key={answer + location + question + TA + idx}
-        >
-          <div className="notification">
-            <ul>
-              <li>{location}</li>
-              <li>{question}</li>
-              <li>{answer}</li>
-              <li>{TA}</li>
-            </ul>
-            {R.isEmpty(question) ? (
-              <BookButton
-                time={time}
-                course={metadata.course}
-                day={metadata.selectedDay}
-                location={location}
-                TA={TA}
-              />
-            ) : null}
+      {questions.map(({ answer, location, question, TA }, idx) =>
+        !R.isEmpty(question) ? null : (
+          <div
+            className="container"
+            key={answer + location + question + TA + idx}
+          >
+            <div className="notification">
+              <ul>
+                <li>{location}</li>
+                <li>{question}</li>
+                <li>{answer}</li>
+                <li>{TA}</li>
+              </ul>
+              {R.isEmpty(question) ? (
+                <BookButton
+                  time={time}
+                  course={metadata.course}
+                  day={metadata.selectedDay}
+                  location={location}
+                  TA={TA}
+                />
+              ) : null}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </>
   );
 };
