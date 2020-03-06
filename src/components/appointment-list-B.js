@@ -6,7 +6,6 @@ import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
 import { useEffect } from 'react';
 
-window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
