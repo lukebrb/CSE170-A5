@@ -151,8 +151,12 @@ const groupByTimeValAgain = R.groupWith((a, b) =>
 // Self-explanatory
 const getTimeVal = R.path([0, 1, 'timeVal']);
 const getHour = R.pipe(
+  R.tap(console.log),
   R.path([0, 0, 1, 'timeVal']),
+  status => (status === undefined ? new Date() : status),
+  R.tap(console.log),
   parse(new Date(), 'H'),
+  R.tap(console.log),
   format('h b')
 );
 const getMinute = R.pipe(R.path([0, 0]), R.split(':', R.__), R.last, parseInt);

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
 import Layout from '../components/layout';
+import withLocation from '../components/withLocation';
 
-export default () => {
+export const ViewQuestion = () => {
   const [isAnswered, setIsAnswered] = useState(true);
   return (
     <Layout>
@@ -65,3 +66,5 @@ const YoutubeVideo = ({ urlSlug }) => (
     allowfullscreen
   ></iframe>
 );
+
+export default withLocation(ViewQuestion);
