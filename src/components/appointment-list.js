@@ -56,7 +56,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
       key={getHour(data)}
       onOpen={() => {
         if (typeof window !== undefined) {
-          window.gtag('event', 'open-timeslot-dropdown', {
+          window.gtag('event', 'open-timeslot-dropdown-A', {
             event_category: 'timeslot-dropdown',
             event_label: 'user opened timeslot dropdown',
           });
@@ -64,9 +64,9 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
       }}
       onClose={() => {
         if (typeof window !== undefined) {
-          window.gtag('event', 'close-timeslot-dropdown', {
+          window.gtag('event', 'close-timeslot-dropdown-A', {
             event_category: 'timeslot-dropdown',
-            event_label: 'user closed timeslot dropdown',
+            event_label: 'user closed timeslot dropdown-A',
           });
         }
       }}
