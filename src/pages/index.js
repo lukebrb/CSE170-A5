@@ -8,14 +8,16 @@ import LoginPage from './login';
 
 import { isLoggedIn } from '../auth';
 
-function HomePage() {
+function HomePage({location}) {
   const [loggedIn, newLogin] = React.useState(false);
+  
 
   React.useEffect(() => {
     newLogin(isLoggedIn);
   }, []);
 
-  return loggedIn ? <CourseSelection /> : <LoginPage login={newLogin} />;
+  return loggedIn ? <CourseSelection alternate={location && location.search && location.search.indexOf('alternate') != -1 ? "alternate=true" : ""}/> 
+    : <LoginPage login={newLogin} />;
 }
 
 export default HomePage;

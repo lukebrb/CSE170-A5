@@ -53,7 +53,7 @@ const searchClient = {
 
 // This page will need to dynamically update what courses are shown
 // based on the user that is currently logged on
-const CourseSelection = () => {
+const CourseSelection = ({alternate}) => {
   const [courses, setCourses] = useState([]);
 
   useFirebase(firebase => {
@@ -87,7 +87,7 @@ const CourseSelection = () => {
         </div>
       ) : (
         courses.map(course => (
-          <Link to={'/time-selection/?course=' + course[0]} key={course[1]}>
+          <Link to={'/time-selection/?course=' + course[0] + "&" + alternate} key={course[1]}>
             <CourseCard>{course[1]}</CourseCard>
           </Link>
         ))

@@ -40,10 +40,6 @@ export default ({ dayItems, metadata }) => {
   );
 };
 
-/**
- * Sub-Components
- */
-
 // Contains up to 4 15-min marks
 const TimeDropdown = ({ data, metadata, isShowingAll }) => {
   const [isHidden, setIsHidden] = useState(false);
@@ -62,7 +58,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
       triggerTagName="div"
       key={getHour(data)}
       onOpen={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== undefined) {
           window.gtag('event', 'open-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user opened timeslot dropdown',
@@ -70,7 +66,7 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
         }
       }}
       onClose={() => {
-        if (typeof window !== undefined) {
+        if (typeof window !== undefined && typeof window.gtag !== undefined) {
           window.gtag('event', 'close-timeslot-dropdown', {
             event_category: 'timeslot-dropdown',
             event_label: 'user closed timeslot dropdown',
