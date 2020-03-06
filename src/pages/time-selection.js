@@ -32,6 +32,7 @@ function TimeSelectionPage({ search }) {
     if (res === undefined) return [];
     return res;
   };
+
   useFirebase(firebase => {
     firebase
       .functions()
@@ -50,6 +51,7 @@ function TimeSelectionPage({ search }) {
       <Appointments
         isShowingAll={true}
         dayItems={slotData !== undefined ? getDay() : undefined}
+        metadata={{ course, selectedDay }}
       />
     </Layout>
   );

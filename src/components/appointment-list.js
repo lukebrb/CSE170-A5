@@ -3,12 +3,13 @@ import * as R from 'ramda';
 import { parse, format } from 'date-fns/esm/fp';
 // Components
 import Collapsible from 'react-collapsible';
+import { Link } from 'gatsby';
 
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
  */
-export default ({ isShowingAll, dayItems }) => {
+export default ({ isShowingAll, dayItems, metadata }) => {
   const Loading = () => (
     <div className="box is-loading">
       <progress className="progress is-medium is-grey-lighter" max="100" />
@@ -25,7 +26,7 @@ export default ({ isShowingAll, dayItems }) => {
     }
 
     return items.map((slotData, idx) => (
-      <TimeDropdown data={slotData} key={idx} />
+      <TimeDropdown data={slotData} key={idx} metadata={metadata} />
     ));
   };
   return (
@@ -40,7 +41,7 @@ export default ({ isShowingAll, dayItems }) => {
  */
 
 // Contains up to 4 15-min marks
-const TimeDropdown = ({ data }) => (
+const TimeDropdown = ({ data, metadata }) => (
   <Collapsible
     trigger={getHour(data)}
     transitionTime={200}
@@ -64,13 +65,17 @@ const TimeDropdown = ({ data }) => (
     }}
   >
     {data.map(quarterHour => (
-      <Slot quarterHour={quarterHour} key={getMinute(quarterHour)} />
+      <Slot
+        quarterHour={quarterHour}
+        key={getMinute(quarterHour)}
+        metadata={metadata}
+      />
     ))}
   </Collapsible>
 );
 
 // Each individual 15-min mark is encapsulated here.
-const Slot = ({ quarterHour }) => {
+const Slot = ({ quarterHour, metadata }) => {
   const [time, { questions }] = R.head(quarterHour);
 
   return (
@@ -84,11 +89,20 @@ const Slot = ({ quarterHour }) => {
         >
           <div className="notification">
             <ul>
-              <li>{answer}</li>
               <li>{location}</li>
               <li>{question}</li>
+              <li>{answer}</li>
               <li>{TA}</li>
             </ul>
+            {R.isEmpty(question) ? (
+              <BookButton
+                time={time}
+                course={metadata.course}
+                day={metadata.selectedDay}
+                location={location}
+                TA={TA}
+              />
+            ) : null}
           </div>
         </div>
       ))}
@@ -96,6 +110,14 @@ const Slot = ({ quarterHour }) => {
   );
 };
 
+const BookButton = ({ time, course, day, location, TA }) => (
+  <Link
+    to={`/input-question?course=${course}&time=${time}&day=${day}&location=${location}&TA=${TA}`}
+    className="button"
+  >
+    Book
+  </Link>
+);
 /**
  * Functions
  */
@@ -107,7 +129,6 @@ const groupByTimeValAgain = R.groupWith((a, b) =>
 // Self-explanatory
 const getTimeVal = R.path([0, 1, 'timeVal']);
 const getHour = R.pipe(
-  R.tap(console.log),
   R.path([0, 0, 1, 'timeVal']),
   parse(new Date(), 'H'),
   format('h b')
@@ -124,7 +145,6 @@ const diffTimes = (a, b) => {
 };
 
 const splitByHour = R.pipe(
-  R.tap(console.log),
   R.toPairs,
   groupByTimeVal,
   R.sort(diffTimes, R.__),
