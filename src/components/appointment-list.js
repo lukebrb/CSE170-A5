@@ -31,7 +31,7 @@ export default ({ isShowingAll, dayItems, metadata }) => {
   };
   return (
     <div className="container">
-      {dayItems != undefined ? <Dropdowns /> : <Loading />}
+      {dayItems != undefined ? (<Dropdowns/>) : (<Loading />)}
     </div>
   );
 };
