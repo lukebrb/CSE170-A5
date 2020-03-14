@@ -70,3 +70,7 @@ yarn-error.log
 
 package-lock.json
 .now
+
+# Firebase stuff
+.firebase/hosting*
+*.cache

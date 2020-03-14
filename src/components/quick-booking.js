@@ -1,73 +1,70 @@
-import React, { useState } from "react"
-import moment, { unix, calendar } from "moment"
-import { useFirebase } from "gatsby-plugin-firebase"
+import React, { useState } from 'react';
+import { Link } from 'gatsby';
+
+import moment, { unix, calendar } from 'moment';
+import { useFirebase } from 'gatsby-plugin-firebase';
+
+import getNearest from '../helpers/nearest-times';
 
 export default () => {
-  const [quickbookItems, setQuickbookItems] = useState()
-  useFirebase(firebase => {
-    const coll = []
-    firebase
+  const [quickbookItems, setQuickbookItems] = useState();
+  useFirebase(async firebase => {
+    const coll = await firebase
       .firestore()
-      .collection("TAs")
+      .collection('TAs')
       .get()
-      .then(doc => doc.docs.map(ta => coll.push(ta.data())))
+      .then(doc => doc.docs.map(ta => ta.data()));
 
-    const res = coll.map(ta => {
-      if (ta["hours"][moment().day() - 1].length > 0) {
-        const res = ta["hours"][moment().day() - 1].map(hour => {
-          if (hour > moment().hour()) {
-            return { name: ta["name"], time: hour }
-          }
-        })
-      }
-    })
-    setQuickbookItems(res)
-  })
+    setQuickbookItems(getNearest(3, coll));
+  });
 
   return (
-    <div
-      className="container"
-      style={{
-        display: "flex",
-        overflowX: "auto",
-        overflowY: "hidden",
-      }}
-    >
-      {quickbookItems ? (
-        quickbookItems.map(quickbookItem => (
-          <MiniCard time={quickbookItem["time"]} />
-        ))
-      ) : (
-        <React.Fragment />
-      )}
-    </div>
-  )
-}
+    <>
+      <h3 className="is-size-4 has-text-weight-bold">Quick Book</h3>
+      <div
+        className="container"
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+        }}
+      >
+        {quickbookItems ? (
+          quickbookItems.map(({ name, hour, course }) => (
+            <MiniCard name={name} hour={hour} course={course} />
+          ))
+        ) : (
+          <React.Fragment />
+        )}
+      </div>
+    </>
+  );
+};
 
 // Micro-components
-const MiniCard = ({ time }) => {
+const MiniCard = ({ name, hour, course }) => {
   return (
     <div
       className="box"
       style={{
-        marginRight: "20px",
-        height: "7rem",
+        marginRight: '20px',
+        height: '7rem',
       }}
     >
       <h5 class="is-size-7 is-marginless">
         {moment()
-          .hour(time)
+          .hour(hour)
           .calendar()}
       </h5>
-      <h5 class="is-size-7 is-marginless is-uppercase"> COGS 100</h5>
+      <h5 class="is-size-7 is-marginless is-uppercase"> {course}</h5>
       <article className="media" style={{ marginTop: 10 }}>
         <div className="media-content">
           <div className="content">
             <h5 className="is-family-sans-serif is-size-7 is-marginless">
-              John Smith
+              {name}
             </h5>
           </div>
-        </div>{" "}
+        </div>{' '}
         <div className="media-right">
           <figure className="image is-32x32">
             <img
@@ -79,5 +76,5 @@ const MiniCard = ({ time }) => {
         </div>
       </article>
     </div>
-  )
-}
+  );
+};

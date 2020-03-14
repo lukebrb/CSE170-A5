@@ -1,54 +1,56 @@
-import React, {useState} from "react"
+import React, { useState } from "react"
 
-import { Link, navigate } from 'gatsby'
+import { Link, navigate } from "gatsby"
 
-import { useFirebase } from 'gatsby-plugin-firebase'
-import { logout } from '../auth'
+import { useFirebase } from "gatsby-plugin-firebase"
+import { logout } from "../auth"
+
+import withLocation from '../components/withLocation'
 
 function NavigationBar(props) {
-  const [firebase, setFirebase] = useState();
+  const [firebase, setFirebase] = useState()
 
   useFirebase(firebase => {
-    setFirebase(firebase);
+    setFirebase(firebase)
+    
   }, [])
 
-  const getNavBar = () => {
-    var history = [];    
+  const mappings = {
+    Home: "/course-selection",
+    "Time Selection": "/time-selection/?course=" + props.search.course,
+    "Input Question": '/input-question/?course=' + props.search.course
+                                      + '&time=' + props.search.time
+                                      + '&day=' + props.search.day
+                                      + '&location=' + props.search.location
+                                      + '&TA=' + props.search.TA
+  }
 
-    for ( let p of props.parents ) {
-      history.push(
-        <li>
-          <Link to={mappings[p]}>{p}</Link>
-        </li>
-      )
+  const getNavBar = () => {
+    var history = []
+    if (props.parents != undefined) {
+      for (let p of props.parents) {
+        history.push(
+          <li key={p}>
+            <Link to={`${mappings[p]}`}>{p}</Link>
+          </li>
+        )
+      }
     }
-    
-    return history;
+
+    return history
   }
 
   const triggerLogout = () => {
-    logout(firebase).then(() => navigate('/'));
+    logout(firebase).then(() => navigate("/"))
   }
 
   return (
     <>
       <nav className="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-          {getNavBar()}
-        </ul>
+        <ul>{getNavBar()}</ul>
       </nav>
-      <button onClick={triggerLogout}>
-        Log out
-      </button>
     </>
   )
 }
 
-// I think it would be a good idea to add functionality for "..."
-// so that the navigation bar does not get extremely long
-const mappings = {
-  'Home': '/course-selection',
-  'Time Selection': '/time-selection'
-}
-
-export default NavigationBar;
+export default withLocation(NavigationBar)
