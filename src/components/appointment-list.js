@@ -95,36 +95,38 @@ const Slot = ({ quarterHour, metadata, isShowingAll }) => {
     <>
       {time}
       <br />
-      {questions.map(({ answer, location, question, TA }, idx) => (
-        <div
-          className="container"
-          key={answer + location + question + TA + idx}
-        >
-          <div className="notification">
-            <ul>
-              <li>{location}</li>
-              <li>{question}</li>
-              <li>{answer}</li>
-              <li>{TA}</li>
-            </ul>
-            {question === '' ? (
-              <BookButton
-                time={time}
-                course={metadata.course}
-                day={metadata.selectedDay}
-                location={location}
-                TA={TA}
-              />
-            ) : (
-              <Link
-                to={`/view-question?question=${question}&location=${location}&answer=${answer}&TA=${TA}`}
-              >
-                View question
-              </Link>
-            )}
+      {questions.map(({ answer, location, question, TA }, idx) =>
+        !isShowingAll && question !== '' ? null : (
+          <div
+            className="container"
+            key={answer + location + question + TA + idx}
+          >
+            <div className="notification">
+              <ul>
+                <li>{location}</li>
+                <li>{question}</li>
+                <li>{answer}</li>
+                <li>{TA}</li>
+              </ul>
+              {question === '' ? (
+                <BookButton
+                  time={time}
+                  course={metadata.course}
+                  day={metadata.selectedDay}
+                  location={location}
+                  TA={TA}
+                />
+              ) : (
+                <Link
+                  to={`/view-question?question=${question}&location=${location}&answer=${answer}&TA=${TA}`}
+                >
+                  View question
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </>
   );
 };
