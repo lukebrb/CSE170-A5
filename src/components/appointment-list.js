@@ -4,6 +4,8 @@ import { parse, format } from 'date-fns/esm/fp';
 // Components
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
+
+window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
@@ -31,7 +33,7 @@ export default ({ isShowingAll, dayItems, metadata }) => {
   };
   return (
     <div className="container">
-      {dayItems != undefined ? (<Dropdowns/>) : (<Loading />)}
+      {dayItems != undefined ? <Dropdowns /> : <Loading />}
     </div>
   );
 };
@@ -86,42 +88,43 @@ const TimeDropdown = ({ data, metadata, isShowingAll }) => {
 // Each individual 15-min mark is encapsulated here.
 const Slot = ({ quarterHour, metadata, isShowingAll }) => {
   const [time, { questions }] = R.head(quarterHour);
-  if (
-    R.isEmpty(questions.filter(q => R.isEmpty(q.question))) &&
-    !isShowingAll
-  ) {
+  if (R.isEmpty(questions.filter(q => q.question === '')) && !isShowingAll) {
     return null;
   }
   return (
     <>
       {time}
       <br />
-      {questions.map(({ answer, location, question, TA }, idx) =>
-        !R.isEmpty(question) ? null : (
-          <div
-            className="container"
-            key={answer + location + question + TA + idx}
-          >
-            <div className="notification">
-              <ul>
-                <li>{location}</li>
-                <li>{question}</li>
-                <li>{answer}</li>
-                <li>{TA}</li>
-              </ul>
-              {R.isEmpty(question) ? (
-                <BookButton
-                  time={time}
-                  course={metadata.course}
-                  day={metadata.selectedDay}
-                  location={location}
-                  TA={TA}
-                />
-              ) : null}
-            </div>
+      {questions.map(({ answer, location, question, TA }, idx) => (
+        <div
+          className="container"
+          key={answer + location + question + TA + idx}
+        >
+          <div className="notification">
+            <ul>
+              <li>{location}</li>
+              <li>{question}</li>
+              <li>{answer}</li>
+              <li>{TA}</li>
+            </ul>
+            {question === '' ? (
+              <BookButton
+                time={time}
+                course={metadata.course}
+                day={metadata.selectedDay}
+                location={location}
+                TA={TA}
+              />
+            ) : (
+              <Link
+                to={`/view-question?question=${question}&location=${location}&answer=${answer}&TA=${TA}`}
+              >
+                View question
+              </Link>
+            )}
           </div>
-        )
-      )}
+        </div>
+      ))}
     </>
   );
 };
