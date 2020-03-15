@@ -186,9 +186,7 @@ const splitByHour = R.pipe(
 const filterAvailable = finalData =>
   finalData.map(i =>
     i.map(j =>
-      j.map(k =>
-        k[1]['questions'].filter(({ question }) => R.isEmpty(question))
-      )
+      j.map(k => k[1]['questions'].filter(({ question }) => question === ''))
     )
   );
 
