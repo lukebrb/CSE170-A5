@@ -16,7 +16,9 @@ export const ViewQuestion = ({ search }) => {
           <h3 className="is-size-4 has-text-primary">Answered ✓</h3>
           <div className="card" style={{ padding: '20px' }}>
             <h5 className="is-size-5">Tutoring Session Podcast</h5>
-            <h5 className="is-size-5">Held at {location}</h5>
+            <h5 className="is-size-5">
+              Held {location === 'Zoom' ? 'via Zoom' : 'at ' + location}
+            </h5>
             <PodcastDescription>{TA}</PodcastDescription>
             <YoutubeVideo urlSlug={'CYI0Mc4cDDU'} />
           </div>
