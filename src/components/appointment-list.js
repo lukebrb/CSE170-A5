@@ -5,7 +5,6 @@ import { parse, format } from 'date-fns/esm/fp';
 import Collapsible from 'react-collapsible';
 import { Link } from 'gatsby';
 
-window.gtag = () => {};
 /**
  * The dict given from the Firebase cloud function looks something like this:
  * {"monday": {1:00: {questions: [], timeVal}}}
