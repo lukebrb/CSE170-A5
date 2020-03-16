@@ -16,35 +16,39 @@ import '../static/algolia.css';
 
 const Hits = ({ hits }) => (
   <ul>
-    {hits.map(hit => (
-      <li key={hit.objectID}>
-        <Link
-          to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
-        >
-          <div className="card" style={{ marginBottom: 10 }}>
-            <div className="card-content">
-              <div className="media">
-                <div className="media-content">
-                  <p className="title is-4 is-family-sans-serif">
-                    {hit.question}
-                  </p>
-                  <p>
-                    With {hit.TA} at {hit.location}
-                  </p>
-                </div>
-                <div className="media-right">
-                  <Link
-                    to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
-                  >
-                    <button className="button is-primary">View question</button>
-                  </Link>
+    {hits.map(hit =>
+      hit.question === '' ? null : (
+        <li key={hit.objectID}>
+          <Link
+            to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
+          >
+            <div className="card" style={{ marginBottom: 10 }}>
+              <div className="card-content">
+                <div className="media">
+                  <div className="media-content">
+                    <p className="title is-4 is-family-sans-serif">
+                      {hit.question}
+                    </p>
+                    <p>
+                      With {hit.TA} at {hit.location}
+                    </p>
+                  </div>
+                  <div className="media-right">
+                    <Link
+                      to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
+                    >
+                      <button className="button is-primary">
+                        View question
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Link>
-      </li>
-    ))}
+          </Link>
+        </li>
+      )
+    )}
   </ul>
 );
 
