@@ -23,13 +23,22 @@ const Hits = ({ hits }) => (
         >
           <div className="card" style={{ marginBottom: 10 }}>
             <div className="card-content">
-              <div className="media-content">
-                <p className="title is-4 is-family-sans-serif">
-                  {hit.question}
-                </p>
-                <p>
-                  With {hit.TA} at {hit.location}
-                </p>
+              <div className="media">
+                <div className="media-content">
+                  <p className="title is-4 is-family-sans-serif">
+                    {hit.question}
+                  </p>
+                  <p>
+                    With {hit.TA} at {hit.location}
+                  </p>
+                </div>
+                <div className="media-right">
+                  <Link
+                    to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
+                  >
+                    <button className="button is-primary">View question</button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
