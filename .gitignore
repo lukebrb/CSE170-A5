@@ -74,3 +74,4 @@ package-lock.json
 # Firebase stuff
 .firebase/hosting*
 *.cache
+.firebase/hosting.cHVibGlj.cache
