@@ -18,8 +18,22 @@ const Hits = ({ hits }) => (
   <ul>
     {hits.map(hit => (
       <li key={hit.objectID}>
-        {' '}
-        {hit.TA} {hit.location} {hit.question}
+        <Link
+          to={`/view-question?question=${hit.question}&answer=${hit.answer}&TA=${hit.TA}&location=${hit.location}`}
+        >
+          <div className="card" style={{ marginBottom: 10 }}>
+            <div className="card-content">
+              <div className="media-content">
+                <p className="title is-4 is-family-sans-serif">
+                  {hit.question}
+                </p>
+                <p>
+                  With {hit.TA} at {hit.location}
+                </p>
+              </div>
+            </div>
+          </div>
+        </Link>
       </li>
     ))}
   </ul>
@@ -53,7 +67,7 @@ const searchClient = {
 
 // This page will need to dynamically update what courses are shown
 // based on the user that is currently logged on
-const CourseSelection = ({alternate}) => {
+const CourseSelection = ({ alternate }) => {
   const [courses, setCourses] = useState([]);
 
   useFirebase(firebase => {
@@ -87,7 +101,10 @@ const CourseSelection = ({alternate}) => {
         </div>
       ) : (
         courses.map(course => (
-          <Link to={'/time-selection/?course=' + course[0] + "&" + alternate} key={course[1]}>
+          <Link
+            to={'/time-selection/?course=' + course[0] + '&' + alternate}
+            key={course[1]}
+          >
             <CourseCard>{course[1]}</CourseCard>
           </Link>
         ))
